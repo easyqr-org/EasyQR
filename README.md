@@ -40,6 +40,8 @@ This project is built for speed, reliability, and smooth workflow automation.
 - Desktop app generates a secure QR code  
 - Phone scans → instant WebSocket connection  
 - Token-based session validation
+
+  
 ![QR Pairing](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFxd2ZiNDFyYWx2dGg0cDh5bTZyMDIwdWVubThucGNodWg3MjlwaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LWocZxVYEzl8Y3LWIZ/giphy.gif)
 
 ### 🔌 **2. USB Session**

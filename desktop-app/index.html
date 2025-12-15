@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>EasyQR Desktop</title>
+</head>
+<body>
+  <h2>EasyQR Desktop</h2>
+
+  <button id="createSession">Create Session</button>
+  <p id="status">Status: Idle</p>
+
+  <script>
+    const axios = require("axios");
+    const WebSocket = require("ws");
+
+    const btn = document.getElementById("createSession");
+    const statusEl = document.getElementById("status");
+
+    btn.onclick = async () => {
+      try {
+        statusEl.innerText = "Status: Creating session...";
+
+        const res = await axios.post("http://localhost:3000/create-session");
+        const { token } = res.data;
+
+        statusEl.innerText = "Status: Connecting WebSocket...";
+
+        const ws = new WebSocket("ws://localhost:3000");
+
+        ws.on("open", () => {
+          ws.send(JSON.stringify({ token }));
+        });
+
+        ws.on("message", (msg) => {
+          const data = JSON.parse(msg);
+
+          if (data.type === "CONNECTED") {
+            statusEl.innerText = "Status: ✅ Connected";
+          }
+        });
+
+        ws.on("close", () => {
+          statusEl.innerText = "Status: ❌ Disconnected";
+        });
+
+      } catch (err) {
+        statusEl.innerText = "Status: ❌ Error";
+        console.error(err);
+      }
+    };
+  </script>
+</body>
+</html>

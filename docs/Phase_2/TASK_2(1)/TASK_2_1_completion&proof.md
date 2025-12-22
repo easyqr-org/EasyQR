@@ -47,21 +47,24 @@ Mobile-first CSS
 ngrok (HTTPS tunneling)
 
 📸 Visual Proof
-🔹 Desktop (ngrok + Server)
-📌 Demonstrates:
-Local server running
-HTTPS tunnel active
-Public URL exposed
-⬇
-![Desktop Setup](../../../../assets/Phase2/ngrok-setup.gif)
+### 🖥️ Desktop Proof — ngrok Tunnel Setup
 
-🔹 Mobile (iPhone Scanner UI)
-📌 Demonstrates:
-Camera permission
-Live video feed
-Scanning state
-⬇️
-![Mobile Scanner](../../../../assets/Phase2/mobile-scan.gif)
+Demonstrates:
+- Local server running
+- HTTPS tunnel active
+- Public URL exposed
+
+![Desktop ngrok Setup](../../../assets/Phase2/ngrok-setup.gif)
+
+
+### 📱 Mobile Proof — Live Barcode Scanner
+
+Demonstrates:
+- Camera permission prompt
+- Live video feed
+- Scanning state activation
+
+![Mobile Scanner UI](../../../assets/Phase2/mobile-scan.gif)
 
 🧪 Testing Performed<br>
 iOS Safari (iPhone)<br>

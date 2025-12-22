@@ -53,14 +53,16 @@ Local server running
 HTTPS tunnel active
 Public URL exposed
 ⬇
-![Desktop Setup](assets/Phase2/ngrok-setup.gif)
+![Desktop Setup](../../../../assets/Phase2/ngrok-setup.gif)
+
 🔹 Mobile (iPhone Scanner UI)
 📌 Demonstrates:
 Camera permission
 Live video feed
 Scanning state
 ⬇️
-![Mobile Scanner](assets/phase2/mobile-scan.gif)
+![Mobile Scanner](../../../../assets/Phase2/mobile-scan.gif)
+
 🧪 Testing Performed<br>
 iOS Safari (iPhone)<br>
 Android Chrome<br>

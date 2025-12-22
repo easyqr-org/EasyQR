@@ -44,6 +44,15 @@ video {
   border: 2px dashed rgba(255, 255, 255, 0.4);
   pointer-events: none;
 }
+.overlay::after {
+  content: "Align QR / Barcode here";
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: #e5e7eb;
+}
 
 .status,
 .result {

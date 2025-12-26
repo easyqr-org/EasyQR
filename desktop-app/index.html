@@ -1,53 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>EasyQR Desktop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h2>EasyQR Desktop</h2>
+  <div class="bg"></div>
 
-  <button id="createSession">Create Session</button>
-  <p id="status">Status: Idle</p>
+  <div class="card">
+    <h1>🖥 EasyQR Desktop</h1>
+    <p class="subtitle">Phase 2 · Task 2.3 — Live Scan Sync</p>
 
-  <script>
-    const axios = require("axios");
-    const WebSocket = require("ws");
+    <div class="status">
+      <span class="dot" id="statusDot"></span>
+      <span id="statusText">Waiting for mobile…</span>
+    </div>
 
-    const btn = document.getElementById("createSession");
-    const statusEl = document.getElementById("status");
+    <div class="scan-box">
+      <p class="label">Last Scan</p>
+      <p id="scanValue" class="scan">—</p>
+    </div>
+  </div>
 
-    btn.onclick = async () => {
-      try {
-        statusEl.innerText = "Status: Creating session...";
-
-        const res = await axios.post("http://localhost:3000/create-session");
-        const { token } = res.data;
-
-        statusEl.innerText = "Status: Connecting WebSocket...";
-
-        const ws = new WebSocket("ws://localhost:3000");
-
-        ws.on("open", () => {
-          ws.send(JSON.stringify({ token }));
-        });
-
-        ws.on("message", (msg) => {
-          const data = JSON.parse(msg);
-
-          if (data.type === "CONNECTED") {
-            statusEl.innerText = "Status: ✅ Connected";
-          }
-        });
-
-        ws.on("close", () => {
-          statusEl.innerText = "Status: ❌ Disconnected";
-        });
-
-      } catch (err) {
-        statusEl.innerText = "Status: ❌ Error";
-        console.error(err);
-      }
-    };
-  </script>
+  <script src="main.js"></script>
 </body>
+
 </html>

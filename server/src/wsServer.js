@@ -1,45 +1,35 @@
 const WebSocket = require("ws");
-const jwt = require("jsonwebtoken");
 
-const JWT_SECRET = "easyqr_secret_key";
+let desktop = null;
+let mobile = null;
 
 function startWebSocketServer(server) {
   const wss = new WebSocket.Server({ server });
 
   wss.on("connection", (ws) => {
-    console.log("🟡 WebSocket connection attempt");
+    ws.on("message", (msg) => {
+      const data = JSON.parse(msg);
 
-    ws.on("message", (message) => {
-      try {
-        const data = JSON.parse(message);
+      if (data.type === "DESKTOP_JOIN") {
+        desktop = ws;
+        desktop.send(JSON.stringify({ type: "DESKTOP_READY" }));
+      }
 
-        const { token } = data;
-
-        if (!token) {
-          ws.send(JSON.stringify({ error: "Token missing" }));
-          ws.close();
-          return;
+      if (data.type === "MOBILE_JOIN") {
+        mobile = ws;
+        if (desktop) {
+          desktop.send(JSON.stringify({ type: "MOBILE_CONNECTED" }));
         }
+      }
 
-        const decoded = jwt.verify(token, JWT_SECRET);
-        ws.sessionId = decoded.sessionId;
-
-        console.log(`🟢 Session CONNECTED: ${ws.sessionId}`);
-
-        ws.send(
-          JSON.stringify({
-            type: "CONNECTED",
-            sessionId: ws.sessionId,
-          })
-        );
-      } catch (err) {
-        console.log("🔴 Invalid WebSocket connection");
-        ws.close();
+      if (data.type === "SCAN" && desktop) {
+        desktop.send(JSON.stringify({ type: "SCAN", value: data.value }));
       }
     });
 
     ws.on("close", () => {
-      console.log("🔴 WebSocket disconnected");
+      if (ws === desktop) desktop = null;
+      if (ws === mobile) mobile = null;
     });
   });
 }

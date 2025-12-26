@@ -2,36 +2,43 @@ const video = document.getElementById("video");
 const startBtn = document.getElementById("startBtn");
 const statusText = document.getElementById("statusText");
 const scanResult = document.getElementById("scanResult");
-const scannerBox = document.getElementById("scannerBox");
+const frame = document.getElementById("frame");
 
-const codeReader = new ZXing.BrowserMultiFormatReader();
+const token = localStorage.getItem("easyqr_token");
+
+const ws = new WebSocket(
+  location.origin.replace("https", "wss")
+);
+
+const reader = new ZXing.BrowserMultiFormatReader();
+
+ws.onopen = () => {
+  ws.send(JSON.stringify({ type: "AUTH", token }));
+};
 
 startBtn.addEventListener("click", async () => {
   startBtn.style.display = "none";
-  scannerBox.classList.remove("hidden");
-  statusText.innerText = "📷 Starting camera...";
+  frame.classList.remove("hidden");
+  statusText.innerText = "📷 Camera starting…";
 
   try {
-    await codeReader.decodeFromConstraints(
-      {
-        video: { facingMode: { ideal: "environment" } }
-      },
+    await reader.decodeFromConstraints(
+      { video: { facingMode: "environment" } },
       video,
-      (result, err) => {
-        if (result) {
-          scanResult.innerText = result.text;
-          statusText.innerText = "✅ Code detected";
+      (res) => {
+        if (res) {
+          scanResult.innerText = res.text;
+          statusText.innerText = "✅ Scan sent";
+          ws.send(JSON.stringify({
+            type: "SCAN",
+            value: res.text
+          }));
           navigator.vibrate?.(100);
-
-          // Stop scanning after success
-          codeReader.reset();
+          reader.reset();
         }
       }
     );
-
-    statusText.innerText = "🔍 Scanning...";
   } catch (err) {
-    console.error(err);
-    statusText.innerText = "❌ Camera access failed";
+    statusText.innerText = "❌ Camera blocked";
   }
 });

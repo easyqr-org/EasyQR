@@ -6,59 +6,81 @@
 
 ---
 
-## 🚀 Overview
+## 🚀 Overview  
+### Live Mobile ↔ Desktop Scan Synchronization
 
-This task focuses on **real-time scan state management** on the mobile scanner UI.  
-The goal is to clearly reflect **scanner lifecycle states** during runtime and ensure users always know what the system is doing.
+> **Status:** ✅ Completed & Fully Verified  
+> **Phase:** 2  
+> **Task:** 2.3  
+> **Mode:** Real-time, bi-directional communication  
 
-This improves:
-- UX clarity
-- Debug visibility
-- Production readiness
-
----
-
-## 🎯 Objectives (Task 2.3)
-
-✔ Clearly represent scanning states  
-✔ Prevent silent or ambiguous scanner behavior  
-✔ Improve feedback during camera & decoding lifecycle  
-✔ Prepare scanner UI for real-time data streaming (next tasks)
+**Tech Stack:**  
+`Node.js` · `WebSockets (WSS)` · `Ngrok` · `ZXing` · `HTML` · `CSS` · `JavaScript`
 
 ---
 
-## 🧠 Scan State Model Implemented
+## 🧠 What This Task Solves
 
-The scanner now follows a **clear state machine**:
+Task **2.3** focuses on building a **deterministic, observable, real-time scanning system** where:
+
+- 📱 A **mobile device** scans a QR / barcode  
+- 🌐 The scan is transmitted instantly via **WebSockets**  
+- 🖥 The **desktop interface** receives and displays the scan live  
+- 🔐 Session-safe communication is enforced  
+- ⚡ No page refresh, no polling, no delay  
+
+This task ensures the system behaves like a **real production application**, not a demo.
+
+---
+
+## 🎯 Objectives Achieved
+
+- ✅ Mobile camera access with explicit user feedback  
+- ✅ Real-time scan transmission  
+- ✅ Desktop receives scan instantly  
+- ✅ Clear connection lifecycle indicators  
+- ✅ No dead states, no silent failures  
+- ✅ Fully observable runtime behavior  
+
+---
+
+## 🧩 System Architecture (Task 2.3)
+
 ```text
-IDLE
-↓
-REQUESTING_CAMERA
-↓
-CAMERA_READY
-↓
-SCANNING
-↓
-DETECTED
-↓
-STOPPED / RESET
+Mobile Scanner (ZXing)
+        ↓
+WebSocket (WSS)
+        ↓
+Ngrok Tunnel
+        ↓
+Node.js Server (Port 3000)
+        ↓
+WebSocket Broadcast
+        ↓
+Desktop Receiver UI
 
 Each state updates the UI instantly.
 ```
 ---
 
-## 🔄 State Transitions & UI Feedback
+## 🔄 State Transitions & UI Feedback (Final)
 
-| State | UI Indicator |
-|-----|-------------|
-| Idle | “Waiting for user action” |
-| Requesting Camera | “Requesting camera access…” |
-| Camera Ready | Live camera preview |
-| Scanning | “📷 Scanning…” |
-| Detected | “✅ Barcode detected” |
-| Reset | Scanner ready again |
+| State | Mobile UI Feedback | Desktop UI Feedback |
+|------|-------------------|--------------------|
+| Idle | “Waiting to start…” | “Waiting for mobile…” |
+| Session Created | — | “Session ready” |
+| Connecting | “🔌 Connecting to server…” | “Connecting to server…” |
+| Connected | “🟢 Connected” | “🟢 Mobile connected” |
+| Camera Request | “📷 Requesting camera access…” | — |
+| Camera Ready | Live camera preview | — |
+| Scanning | “📡 Scanning…” + animated scan line | “Listening for scan…” |
+| Barcode Detected | “✅ Scan sent” + vibration | “📥 Scan received” |
+| Display Result | Last scanned value | Last scanned value |
+| Reset Ready | Scanner auto-resets | Ready for next scan |
 
-This ensures **no dead states** and **no silent failures**.
+> ✔ **No dead states**  
+> ✔ **No silent failures**  
+> ✔ **Every action has visual confirmation**
 
 ---
 
@@ -80,28 +102,58 @@ This ensures **no dead states** and **no silent failures**.
 - Scanner activation
 - Live scanning state
 - Detection feedback
+- “Scan sent” confirmation
 
-```md
-![Task 2.3 Mobile Proof](assets/phase-2/task-2-3/mobile-scan-states.gif)
-```
+
+![Task 2.3 Mobile Proof](assets/Phase2/TASK_2_3/mobile-scan-states.gif)
+
+### 🌐 Connection Establishment — Server & Ngrok
+
+>Demonstrates:
+- Server running on port 3000
+- Ngrok tunnel active
+- Secure WSS connection
+![Task 2.3 Connection Proof](assets/Phase2/TASK_2_3/connection-proof.gif)
+
+### 🖥 Desktop Receiver — Live Scan Update
+> Demonstrates:
+- Mobile connection detected
+- Live scan reception
+- Instant UI update
+![Task 2.3 Desktop Proof](assets/Phase2/TASK_2_3/desktop-receiver.gif)
+Live traffic relay
 🧩 Files Touched
 ```text
 
+server/
+├── src/index.js
+├── src/wsServer.js
+
+desktop-app/
+├── index.html
+├── main.js
+└── styles.css
+
 mobile-scanner/
-├── public/index.html
+├── index.html
 ├── src/scanner.js
 └── src/styles.css
-```
-### 🏁 Completion Checklist
-Scanner state machine implemented<br>
-UI reflects all runtime states
 
- No silent scanning behavior<br>
- Proof recorded & attached<br>
- Ready for real-time data streaming<br>
+```
+
+### 🏁Completion Checklist
+>✅ Scanner state machine implemented <br>
+> ✅ Mobile UI reflects all runtime states<br>
+> ✅ Desktop UI updates in real time<br>
+> ✅ WebSocket communication verified<br>
+> ✅ Proofs recorded & attached<br>
+> ✅ Production-ready behavior achieved
 ### 🔮 What’s Next — Task 2.4
+```text
 Next task will focus on:
 Sending decoded scan data to backend
 Real-time WebSocket transmission
 Desktop scan feed integration
+```
+
 <p align="center"> <b>Task 2.3 complete — scanner behavior is now deterministic, observable, and production-ready.</b> </p> ```

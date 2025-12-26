@@ -1,38 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>EasyQR Mobile Scanner</title>
+  <title>EasyQR Scanner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- ZXing -->
-  <script src="https://unpkg.com/@zxing/library@latest"></script>
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="./src/styles.css" />
+  <link rel="stylesheet" href="src/styles.css">
 </head>
-
 <body>
-  <main class="container">
+
+  <div class="scanner-container">
     <h1>📱 EasyQR Scanner</h1>
-    <p class="subtitle">Phase 2 · Task 2.2 — Mobile Barcode Capture</p>
+    <p class="hint">Tap start and scan the desktop QR</p>
 
-    <button id="startBtn" class="start-btn">▶ Start Scanner</button>
+    <button id="startBtn">Start Scanning</button>
 
-    <div class="scanner-box hidden" id="scannerBox">
-      <video id="video" playsinline></video>
-      <div class="overlay"></div>
+    <div class="frame hidden" id="frame">
+      <video id="video" autoplay playsinline></video>
+      <div class="scan-line"></div>
     </div>
 
-    <div class="status">
-      Status: <strong id="statusText">Waiting for user action</strong>
-    </div>
+    <p id="statusText" class="status">Waiting to start…</p>
+    <p id="scanResult" class="result"></p>
+  </div>
 
-    <div class="result">
-      Last Scan: <strong id="scanResult">—</strong>
-    </div>
-  </main>
-
-  <script src="./src/scanner.js"></script>
+  <script src="https://unpkg.com/@zxing/library@latest"></script>
+  <script src="src/scanner.js"></script>
 </body>
 </html>

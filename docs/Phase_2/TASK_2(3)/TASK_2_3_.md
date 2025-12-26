@@ -105,7 +105,7 @@ Each state updates the UI instantly.
 - “Scan sent” confirmation
 
 
-![Task 2.3 Mobile Proof](assets/Phase2/TASK_2_3/mobile-scan-states.gif)
+![Task 2.3 Mobile Proof](../../../assets/Phase2/TASK_2_3/mobile-scan-states.gif)
 
 ### 🌐 Connection Establishment — Server & Ngrok
 
@@ -113,14 +113,14 @@ Each state updates the UI instantly.
 - Server running on port 3000
 - Ngrok tunnel active
 - Secure WSS connection
-![Task 2.3 Connection Proof](assets/Phase2/TASK_2_3/connection-proof.gif)
+![Task 2.3 Connection Proof](../../../assets/Phase2/TASK_2_3/connection-proof.gif)
 
 ### 🖥 Desktop Receiver — Live Scan Update
 > Demonstrates:
 - Mobile connection detected
 - Live scan reception
 - Instant UI update
-![Task 2.3 Desktop Proof](assets/Phase2/TASK_2_3/desktop-receiver.gif)
+![Task 2.3 Desktop Proof](../../../assets/Phase2/TASK_2_3/desktop-receiver.gif)
 Live traffic relay
 🧩 Files Touched
 ```text

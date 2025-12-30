@@ -150,14 +150,14 @@ UI Update
 - Replay verified
 
 
-![Task 2.5 Server Proof](assets/Phase2/TASK_2_5/server-store.gif)
+![Task 2.5 Server Proof](../../../assets/Phase2/TASK_2_5/server-store.gif)
 
 
 ### 🖥 Desktop Replay
 - Page refresh restores scan
 
 
-![Task 2.5 Desktop Proof](assets/Phase2/TASK_2_5/desktop-replay.gif)
+![Task 2.5 Desktop Proof](../../../assets/Phase2/TASK_2_5/desktop-replay.gif)
 
 ---
 

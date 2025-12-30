@@ -1,0 +1,10 @@
+{
+  "type": "SCAN",
+  "payload": {
+    "sessionId": "string",
+    "value": "string",
+    "format": "QR_CODE | CODE_128 | ...",
+    "timestamp": "ISO_8601",
+    "source": "mobile"
+  }
+}

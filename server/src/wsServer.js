@@ -8,7 +8,12 @@ function startWebSocketServer(server) {
 
   wss.on("connection", (ws) => {
     ws.on("message", (msg) => {
-      const data = JSON.parse(msg);
+      let data;
+      try {
+        data = JSON.parse(msg);
+      } catch {
+        return;
+      }
 
       if (data.type === "DESKTOP_JOIN") {
         desktop = ws;
@@ -22,8 +27,11 @@ function startWebSocketServer(server) {
         }
       }
 
-      if (data.type === "SCAN" && desktop) {
-        desktop.send(JSON.stringify({ type: "SCAN", value: data.value }));
+      if (data.type === "SCAN" && data.payload && desktop) {
+        desktop.send(JSON.stringify({
+          type: "SCAN",
+          payload: data.payload
+        }));
       }
     });
 

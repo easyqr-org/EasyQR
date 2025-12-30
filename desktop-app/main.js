@@ -6,11 +6,13 @@ const ws = new WebSocket(
   location.origin.replace("https", "wss")
 );
 
+// Desktop connects
 ws.onopen = () => {
   statusText.innerText = "Connected to server…";
   ws.send(JSON.stringify({ type: "DESKTOP_JOIN" }));
 };
 
+// Incoming messages
 ws.onmessage = (e) => {
   const msg = JSON.parse(e.data);
 
@@ -31,7 +33,7 @@ ws.onmessage = (e) => {
     statusText.innerText = `Scan received (${format})`;
     statusDot.style.background = "#22c55e";
 
-    console.log("📦 Scan Payload:", msg.payload);
+    console.log("📦 Stored Payload:", msg.payload);
   }
 };
 

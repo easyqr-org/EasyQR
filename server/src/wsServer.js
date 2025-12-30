@@ -1,4 +1,5 @@
 const WebSocket = require("ws");
+const { saveScan } = require("./scanStore");
 
 let desktop = null;
 let mobile = null;
@@ -15,11 +16,13 @@ function startWebSocketServer(server) {
         return;
       }
 
+      // Desktop joins
       if (data.type === "DESKTOP_JOIN") {
         desktop = ws;
         desktop.send(JSON.stringify({ type: "DESKTOP_READY" }));
       }
 
+      // Mobile joins
       if (data.type === "MOBILE_JOIN") {
         mobile = ws;
         if (desktop) {
@@ -27,11 +30,16 @@ function startWebSocketServer(server) {
         }
       }
 
-      if (data.type === "SCAN" && data.payload && desktop) {
-        desktop.send(JSON.stringify({
-          type: "SCAN",
-          payload: data.payload
-        }));
+      // Scan received
+      if (data.type === "SCAN" && data.payload) {
+        saveScan(data.payload);
+
+        if (desktop) {
+          desktop.send(JSON.stringify({
+            type: "SCAN",
+            payload: data.payload
+          }));
+        }
       }
     });
 

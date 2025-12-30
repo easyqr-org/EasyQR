@@ -130,7 +130,7 @@ Real-time transmission
 
 Desktop receipt & rendering
 
-![Task 2.4 Payload Proof](assets/Phase2/TASK_2_4/payload-stream.gif)
+![Task 2.4 Payload Proof](../../../assets/Phase2/TASK_2_4/payload-stream.gif)
 ### 🧠 Why This Matters
 This task transforms the project from:
 

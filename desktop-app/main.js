@@ -33,7 +33,7 @@ ws.onmessage = (e) => {
     statusText.innerText = `Scan received (${format})`;
     statusDot.style.background = "#22c55e";
 
-    console.log("📦 Stored Payload:", msg.payload);
+    console.log("📦 Persisted Scan:", msg.payload);
   }
 };
 

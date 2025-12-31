@@ -1,5 +1,5 @@
 const WebSocket = require("ws");
-const { saveScan } = require("./scanStore");
+const { saveScan, getLastScan } = require("./scanStore");
 
 let desktop = null;
 let mobile = null;
@@ -20,6 +20,15 @@ function startWebSocketServer(server) {
       if (data.type === "DESKTOP_JOIN") {
         desktop = ws;
         desktop.send(JSON.stringify({ type: "DESKTOP_READY" }));
+
+        // 🔁 Replay last scan if exists
+        const lastScan = getLastScan();
+        if (lastScan) {
+          desktop.send(JSON.stringify({
+            type: "SCAN",
+            payload: lastScan
+          }));
+        }
       }
 
       // Mobile joins

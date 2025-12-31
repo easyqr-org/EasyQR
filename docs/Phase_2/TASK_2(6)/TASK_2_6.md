@@ -1,7 +1,7 @@
 # 🧠 Phase 2 · Task 2.6 — Persistent Scan Memory & Session Awareness
 
 <p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNm5zN3N6a2xqN2F0b25ndWZ3Y3Y5dnd4a2F6b3A5ZGFhNmM3ZCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l3vRfNA1p0rvhMSvS/giphy.gif" width="420"/>
+  <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOW1jM2c3ZDZqY21ldjVpc3N6anJ4eThicnF4dTZhdmhuejVoa2o5dSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l4pMhSM49dvlxOomI/giphy.gif" width="420"/>
 </p>
 
 ---

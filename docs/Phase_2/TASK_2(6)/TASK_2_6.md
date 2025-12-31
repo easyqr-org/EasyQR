@@ -130,7 +130,7 @@ Latest scan rendered
 
 Persistent behavior confirmed
 
-![Task 2.6 Desktop Proof](assets/Phase2/TASK_2_6/desktop-persistent-scan.png)
+![Task 2.6 Desktop Proof](../../../assets/Phase2/TASK_2_6/desktop-persistent-scan.png)
 
 ## 🧠 Why Task 2.6 Matters
 This task transforms the system from:

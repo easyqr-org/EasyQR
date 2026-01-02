@@ -13,42 +13,40 @@ function startWebSocketServer(server) {
       try {
         data = JSON.parse(msg);
       } catch {
+        ws.send(JSON.stringify({ type: "ERROR", message: "Invalid JSON" }));
         return;
       }
 
-      // Desktop joins
       if (data.type === "DESKTOP_JOIN") {
         desktop = ws;
         desktop.send(JSON.stringify({ type: "DESKTOP_READY" }));
 
-        // 🔁 Replay last scan if exists
-        const lastScan = getLastScan();
-        if (lastScan) {
-          desktop.send(JSON.stringify({
-            type: "SCAN",
-            payload: lastScan
-          }));
+        const last = getLastScan();
+        if (last) {
+          desktop.send(JSON.stringify({ type: "SCAN", payload: last }));
         }
       }
 
-      // Mobile joins
       if (data.type === "MOBILE_JOIN") {
         mobile = ws;
-        if (desktop) {
-          desktop.send(JSON.stringify({ type: "MOBILE_CONNECTED" }));
-        }
+        desktop?.send(JSON.stringify({ type: "MOBILE_CONNECTED" }));
       }
 
-      // Scan received
-      if (data.type === "SCAN" && data.payload) {
-        saveScan(data.payload);
+      if (data.type === "SCAN") {
+        const accepted = saveScan(data.payload);
 
-        if (desktop) {
-          desktop.send(JSON.stringify({
-            type: "SCAN",
-            payload: data.payload
+        if (!accepted) {
+          ws.send(JSON.stringify({
+            type: "ERROR",
+            message: "Duplicate or invalid scan"
           }));
+          return;
         }
+
+        desktop?.send(JSON.stringify({
+          type: "SCAN",
+          payload: data.payload
+        }));
       }
     });
 

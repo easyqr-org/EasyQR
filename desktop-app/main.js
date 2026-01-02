@@ -6,13 +6,11 @@ const ws = new WebSocket(
   location.origin.replace("https", "wss")
 );
 
-// Desktop connects
 ws.onopen = () => {
-  statusText.innerText = "Connected to server…";
   ws.send(JSON.stringify({ type: "DESKTOP_JOIN" }));
+  statusText.innerText = "Connected";
 };
 
-// Incoming messages
 ws.onmessage = (e) => {
   const msg = JSON.parse(e.data);
 
@@ -27,13 +25,14 @@ ws.onmessage = (e) => {
   }
 
   if (msg.type === "SCAN") {
-    const { value, format, timestamp } = msg.payload;
-
-    scanValue.innerText = value;
-    statusText.innerText = `Scan received (${format})`;
+    scanValue.innerText = msg.payload.value;
+    statusText.innerText = "Scan received ✔";
     statusDot.style.background = "#22c55e";
+  }
 
-    console.log("📦 Persisted Scan:", msg.payload);
+  if (msg.type === "ERROR") {
+    statusText.innerText = msg.message;
+    statusDot.style.background = "red";
   }
 };
 

@@ -5,6 +5,8 @@ const scanResult = document.getElementById("scanResult");
 const frame = document.getElementById("frame");
 
 const sessionId = localStorage.getItem("easyqr_token");
+let lastSent = null;
+let locked = false;
 
 const ws = new WebSocket(
   location.origin.replace("https", "wss")
@@ -13,41 +15,65 @@ const ws = new WebSocket(
 const reader = new ZXing.BrowserMultiFormatReader();
 
 ws.onopen = () => {
-  statusText.innerText = "🟢 Connected to server";
+  ws.send(JSON.stringify({ type: "MOBILE_JOIN" }));
+  statusText.innerText = "🟢 Connected";
+};
+
+ws.onmessage = (e) => {
+  const msg = JSON.parse(e.data);
+  if (msg.type === "ERROR") {
+    statusText.innerText = "⚠️ Scan rejected";
+    locked = false;
+  }
 };
 
 startBtn.addEventListener("click", async () => {
   startBtn.style.display = "none";
   frame.classList.remove("hidden");
-  statusText.innerText = "📷 Camera starting…";
+  statusText.innerText = "📷 Scanning…";
 
-  try {
-    await reader.decodeFromConstraints(
-      { video: { facingMode: "environment" } },
-      video,
-      (res) => {
-        if (!res) return;
+  await reader.decodeFromConstraints(
+    { video: { facingMode: "environment" } },
+    video,
+    (res) => {
+      if (!res || locked) return;
 
-        const payload = {
-          sessionId,
-          value: res.text,
-          format: res.getBarcodeFormat(),
-          timestamp: new Date().toISOString(),
-          source: "mobile",
-        };
+      if (res.text === lastSent) return;
 
-        ws.send(JSON.stringify({
-          type: "SCAN",
-          payload
-        }));
+      locked = true;
+      lastSent = res.text;
 
-        scanResult.innerText = res.text;
-        statusText.innerText = "✅ Scan sent";
-        navigator.vibrate?.(100);
-        reader.reset();
-      }
-    );
-  } catch {
-    statusText.innerText = "❌ Camera blocked";
-  }
+      const payload = {
+        sessionId,
+        value: res.text,
+        format: res.getBarcodeFormat(),
+        timestamp: new Date().toISOString(),
+        source: "mobile"
+      };
+
+      ws.send(JSON.stringify({ type: "SCAN", payload }));
+
+      scanResult.innerText = res.text;
+      statusText.innerText = "✅ Scan sent";
+      navigator.vibrate?.(100);
+
+      setTimeout(() => locked = false, 1500);
+    }
+  );
+});
+// 🔥 Task 2.7 — Invalid Payload Test
+document.getElementById("sendInvalid").addEventListener("click", () => {
+  const invalidPayload = {
+    value: null,           // ❌ invalid
+    format: 123,           // ❌ invalid
+    timestamp: "INVALID",  // ❌ invalid
+    // sessionId missing ❌
+  };
+
+  ws.send(JSON.stringify({
+    type: "SCAN",
+    payload: invalidPayload
+  }));
+
+  statusText.innerText = "❌ Invalid payload sent (test)";
 });

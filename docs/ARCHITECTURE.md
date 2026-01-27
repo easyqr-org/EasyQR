@@ -124,3 +124,95 @@ Barcode scanning
 UI/UX polish
 Persistent storage
 ```
+
+
+# 🧱 EasyQR — Architecture Overview
+
+EasyQR is built using a **progressive, phase‑driven architecture**.
+Each phase introduces a new system capability without breaking existing layers.
+
+---
+
+## 🧱 Phase 1 — Core Session & Pairing Architecture
+**Goal:** Secure Desktop ↔ Mobile communication
+
+- Session creation (REST)
+- JWT authentication
+- QR-based pairing
+- WebSocket handshake
+- Connection state synchronization
+
+---
+
+## 📱 Phase 2 — Mobile Scanning Foundation
+**Goal:** Capture scan input correctly
+
+- Mobile camera access
+- QR / barcode decoding
+- Scanner UI & lifecycle control
+- Scan result handling & UX feedback
+
+---
+
+## 📦 Phase 3 — Scan Payload & Data Contract
+**Goal:** Define scan data structure
+
+- Standardized JSON payload
+- `sessionId`, metadata, timestamps
+- Payload validation & consistency
+
+---
+
+## 🔄 Phase 4 — Real‑Time Streaming Layer
+**Goal:** Stream scan data live
+
+- WebSocket scan streaming
+- Server routes by `sessionId`
+- Low‑latency delivery to Desktop
+
+---
+
+## 🖥️ Phase 5 — Desktop Consumption Layer
+**Goal:** Use scan data on Desktop
+
+- Receive scan events
+- Render results in UI
+- Handle multiple scans per session
+
+---
+
+## 🗂️ Phase 6 — Persistence & History
+**Goal:** Retain scan data
+
+- Scan storage
+- Session-based history
+- Resume & reload capability
+
+---
+
+## 🔐 Phase 7 — Security & Hardening
+**Goal:** Production safety
+
+- Token expiry & rotation
+- Payload validation
+- Rate limiting
+- Session invalidation
+
+---
+
+## 🚀 Phase 8 — Production & Deployment
+**Goal:** Ship‑ready system
+
+- Environment configuration
+- Deployment strategy
+- Monitoring & logs
+- Error handling & recovery
+
+---
+
+## 🧠 Architectural Philosophy
+
+- Architecture before UI
+- Data contracts before networking
+- Each phase adds, never rewrites
+- Clear separation of concerns

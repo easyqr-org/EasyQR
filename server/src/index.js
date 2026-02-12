@@ -19,6 +19,12 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "easyqr_secret_key";
 const SESSION_TTL_SECONDS = Number(process.env.SESSION_TTL_SECONDS || "180");
 
+// Optional: comma-separated list like "https://inventory.example.com,https://erp.example.com"
+const ALLOWED_ORIGINS = (process.env.EASYQR_ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 // Optional: comma-separated list like "projectA:secretA,projectB:secretB"
 const PROJECT_KEYS = (process.env.EASYQR_PROJECT_KEYS || "")
   .split(",")
@@ -32,7 +38,22 @@ const PROJECT_KEYS = (process.env.EASYQR_PROJECT_KEYS || "")
 
 const hasProjectKeys = Object.keys(PROJECT_KEYS).length > 0;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser clients (no origin) for ops/tools.
+      if (!origin || !ALLOWED_ORIGINS.length) {
+        return callback(null, true);
+      }
+
+      if (ALLOWED_ORIGINS.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"), false);
+    },
+  })
+);
 app.use(express.json());
 
 // Health Check
@@ -122,7 +143,11 @@ app.delete("/api/scans", (req, res) => {
   res.json({ status: "cleared" });
 });
 
-startWebSocketServer(server, { jwtSecret: JWT_SECRET, sessionTtlSeconds: SESSION_TTL_SECONDS });
+startWebSocketServer(server, {
+  jwtSecret: JWT_SECRET,
+  sessionTtlSeconds: SESSION_TTL_SECONDS,
+  allowedWsOrigins: ALLOWED_ORIGINS,
+});
 
 server.listen(PORT, () => {
   console.log(`🚀 EasyQR running at http://localhost:${PORT}`);

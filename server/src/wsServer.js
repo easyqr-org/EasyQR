@@ -75,10 +75,16 @@ function sendSessionState(sessionId) {
   broadcast(sessionId, ["desktop", "host"], message);
 }
 
-function startWebSocketServer(server, { jwtSecret, sessionTtlSeconds }) {
+function startWebSocketServer(server, { jwtSecret, sessionTtlSeconds, allowedWsOrigins = [] }) {
   const wss = new WebSocket.Server({ server, path: "/ws" });
 
   wss.on("connection", (ws, req) => {
+    const origin = req.headers.origin;
+    if (allowedWsOrigins.length && origin && !allowedWsOrigins.includes(origin)) {
+      ws.close(4000, "Origin not allowed");
+      return;
+    }
+
     const url = new URL(req.url, "http://localhost");
     const token = url.searchParams.get("token");
     const role = (url.searchParams.get("role") || "HOST").toUpperCase();

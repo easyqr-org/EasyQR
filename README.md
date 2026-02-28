@@ -1,8 +1,7 @@
-# 🚀 EasyQR — Real-Time Cross-Device QR Sync Platform
-
+# EasyQR
 
 <p align="center">
-  <b>A production-grade system that syncs QR scans from mobile to desktop in real-time.</b>
+  <b>A production-grade system that syncs QR scans from mobile to desktop in real time.</b>
 </p>
 
 <p align="center">
@@ -12,11 +11,6 @@
   <img src="https://img.shields.io/badge/Mobile-Optimized-green"/>
 </p>
 
----
-
-##  What is EasyQR?
-
-# EasyQR
 EasyQR is a real-time QR/barcode scanning infrastructure plugin for inventory systems. It replaces dedicated handheld scanners with mobile cameras while preserving low-latency desktop workflows.
 
 ## Problem Statement
@@ -51,6 +45,19 @@ EasyQR runtime path:
 
 Bliski IMS UI -> EasyQR SDK -> EasyQR Server -> Mobile Scanner -> Scan event -> Bliski inventory update
 
+```mermaid
+flowchart LR
+  A[Bliski IMS Web App] --> B[@easyqr/sdk]
+  B -->|POST /api/sessions| C[EasyQR Server]
+  B -->|WS /ws host| C
+  D[Mobile Scanner Web App] -->|WS /ws mobile| C
+  D -->|Camera scan payload| C
+  C -->|SCAN + SESSION_STATE events| B
+  B -->|Inventory API update| E[Bliski IMS Backend]
+  C --> F[(PostgreSQL)]
+  C --> G[(Redis)]
+```
+
 ## Repository Structure
 - `server/`: Node.js/Express API, WebSocket server, security middleware, persistence adapters, migrations, observability
 - `sdk/`: `@easyqr/sdk` typed browser SDK (HTTP session creation + WS client events)
@@ -63,7 +70,7 @@ Bliski IMS UI -> EasyQR SDK -> EasyQR Server -> Mobile Scanner -> Scan event -> 
 - `docs/`: phase-by-phase plans, execution reports, test matrices, and proof packs
 - `docker-compose.yml`: containerized runtime for server + PostgreSQL + Redis
 
-## How EasyQR Works (Flow)
+## How EasyQR Works
 1. Client integrates EasyQR SDK in inventory UI.
 2. Client creates a session (`POST /api/sessions`) with project credentials.
 3. Host session provides pairing context (desktop/mobile URLs, tokenized WS context).
@@ -82,7 +89,7 @@ Bliski IMS UI -> EasyQR SDK -> EasyQR Server -> Mobile Scanner -> Scan event -> 
   - Mixed ownership model (for example, hosted control plane with client-side runtime boundaries).
   - Useful when policy requires partial on-prem operation.
 
-## Quick Start (Developer)
+## Quick Start
 Prerequisites:
 - Docker + Docker Compose
 - Node.js 18+ (for local non-container workflows)
@@ -131,14 +138,13 @@ client.on("connection.open", (e) => {
 
 client.on("scan.received", (e) => {
   console.log("scan", e.scan.value, e.scan.format);
-  // map into inventory update API here
 });
 
 const session = await client.startHost();
 console.log("session", session.session.sessionId, session.mobileUrl);
 ```
 
-## Observability & Reliability
+## Observability and Reliability
 EasyQR includes operational visibility and lifecycle controls:
 - Health endpoints: `/health`, `/health/live`, `/health/ready`
 - Metrics endpoint: `/metrics`
@@ -146,14 +152,14 @@ EasyQR includes operational visibility and lifecycle controls:
 - Graceful shutdown/drain behavior for HTTP + WebSocket paths
 - Restart-safe persistence with PostgreSQL and multi-instance coordination via Redis
 
-## CI/CD & DevOps
+## CI/CD and DevOps
 The repository includes a GitHub Actions CI workflow that enforces deterministic checks:
 - Install job
 - Server test/typecheck gates
 - SDK typecheck/build/test gates
 - Build artifact generation for server and SDK outputs
 
-Deployment/rollback runbooks and scripts are included under `deploy/` and `docs/phase-5/`.
+Deployment and rollback runbooks are included under `deploy/` and `docs/phase-5/`.
 
 ## Security Model
 Implemented security controls include:
@@ -191,13 +197,8 @@ Near-term productization priorities:
 ## Contributing
 - Use focused branches and clear commit messages.
 - Keep changes aligned with documented phase plans.
-- Add/update tests for behavior changes.
+- Add or update tests for behavior changes.
 - Update phase docs when introducing operational or architecture-impacting changes.
 
 ## License
 MIT License. See `LICENSE`.
-
-
-<p align="center"> <b>Built with ⚡ passion, 📱 creativity, and 🧠 innovation.</b> </p>
-
----

@@ -7,463 +7,196 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Status-Active-success"/>
-  <img src="https://img.shields.io/badge/Phase-2%20Completed-blue"/>
+  <img src="https://img.shields.io/badge/Phase-7%20Completed-blue"/>
   <img src="https://img.shields.io/badge/WebSockets-Real--Time-purple"/>
   <img src="https://img.shields.io/badge/Mobile-Optimized-green"/>
 </p>
 
 ---
 
-## 🧠 What is EasyQR?
+##  What is EasyQR?
 
-**EasyQR** is a **real-time, cross-device QR synchronization platform** that enables:
+# EasyQR
+EasyQR is a real-time QR/barcode scanning infrastructure plugin for inventory systems. It replaces dedicated handheld scanners with mobile cameras while preserving low-latency desktop workflows.
 
-- 📱 Scanning a QR code on a **mobile device**
-- 🌐 Secure real-time transmission via **WebSockets**
-- 🖥 Instant reflection on a **desktop dashboard**
-- 🔐 Session-based authentication using **JWT**
-- ⚡ Zero refresh, zero polling, true real-time UX
+## Problem Statement
+Inventory teams often depend on USB/Bluetooth barcode scanners tied to a fixed workstation. That setup introduces operational friction:
+- Hardware dependency and maintenance overhead
+- Limited mobility at receiving, picking, and stock-check points
+- Session collisions when multiple operators scan concurrently
+- Weak visibility when scan input fails, duplicates, or disconnects
 
-This project is built with **production architecture**, **clear state management**, and **enterprise-grade UX clarity**.
+EasyQR exists to provide scanner-grade input behavior using a phone camera, with session-safe routing into desktop inventory workflows.
 
----
+## Solution Overview
+EasyQR provides a session-based architecture where a desktop host session is paired to a mobile scanner over WebSocket. Scans are validated, deduplicated, and streamed back to the desktop/client system in real time.
 
-## 🧩 Tech Stack
+At integration time, the inventory application embeds `@easyqr/sdk` to:
+- Create scan sessions
+- Open/attach host connections
+- Receive typed scan and session-state events
+- Map scan events into inventory update APIs
 
-| Layer | Technology |
-|-----|------------|
-| Frontend | HTML · CSS · JavaScript |
-| Mobile Scanner | ZXing |
-| Real-Time Layer | WebSockets (WSS) |
-| Backend | Node.js · Express |
-| Auth | JWT |
-| Tunneling | Ngrok |
-| UI Design | Animated CSS · Glassmorphism |
+## Core Features
+- Real-time scan streaming from mobile to desktop/client
+- WebSocket session pairing with JWT-backed session context
+- SDK integration model (`@easyqr/sdk`) for browser clients
+- Multi-tenant security controls (project auth, scoped access, key lifecycle)
+- Docker deployment support (server + PostgreSQL + Redis)
+- Observability and metrics endpoints for operations
+- Graceful lifecycle handling (readiness, draining, controlled shutdown)
 
----
+## Architecture Overview
+EasyQR runtime path:
 
-## 🧭 Project Architecture
+Bliski IMS UI -> EasyQR SDK -> EasyQR Server -> Mobile Scanner -> Scan event -> Bliski inventory update
 
-```text
-Mobile Scanner
-   ↓ (Camera Scan)
-WebSocket (WSS)
-   ↓
-Node.js Server (Port 3000)
-   ↓
-WebSocket Broadcast
-   ↓
-Desktop UI (Live Update)
+## Repository Structure
+- `server/`: Node.js/Express API, WebSocket server, security middleware, persistence adapters, migrations, observability
+- `sdk/`: `@easyqr/sdk` typed browser SDK (HTTP session creation + WS client events)
+- `mobile-scanner/`: mobile-first scanner web app (camera scan UI)
+- `desktop-app/`: desktop host-facing UI assets
+- `examples/react/`: React integration example consuming `@easyqr/sdk`
+- `examples/html/`: framework-free browser integration example
+- `integration-test/`: external-consumer validation project for SDK resolution and runtime flow
+- `deploy/`: deployment, health-check, and rollback scripts
+- `docs/`: phase-by-phase plans, execution reports, test matrices, and proof packs
+- `docker-compose.yml`: containerized runtime for server + PostgreSQL + Redis
+
+## How EasyQR Works (Flow)
+1. Client integrates EasyQR SDK in inventory UI.
+2. Client creates a session (`POST /api/sessions`) with project credentials.
+3. Host session provides pairing context (desktop/mobile URLs, tokenized WS context).
+4. Desktop and mobile connect over WebSocket to the same session.
+5. Mobile scans barcode/QR; server validates and routes scan event.
+6. Client receives typed SDK events and updates inventory state/backend.
+
+## Deployment Modes
+- EasyQR Cloud Hosted:
+  - EasyQR runs in centrally managed infrastructure.
+  - Client integrates SDK and calls hosted endpoints.
+- Client Self-Hosted (Docker):
+  - Client runs EasyQR stack (server + PostgreSQL + Redis) in their environment.
+  - Suitable for data locality and internal-network requirements.
+- Hybrid model:
+  - Mixed ownership model (for example, hosted control plane with client-side runtime boundaries).
+  - Useful when policy requires partial on-prem operation.
+
+## Quick Start (Developer)
+Prerequisites:
+- Docker + Docker Compose
+- Node.js 18+ (for local non-container workflows)
+
+1. Start full containerized stack:
+```bash
+docker compose up --build
 ```
->One scan. One session. Instant sync.
 
-🧱 Project Phases Overview
---------------------------
-
----
-
-# 🧭 Project Roadmap — 8 Phase Execution Plan
-
-> A **systematic, production-first roadmap** designed to transform a simple idea  
-> into a **real-time, cross-device, secure scanning platform**.
-
----
-
-## 🧱 Phase 1 — Core Architecture & Session System
-
-**Objective:** Establish the foundational backend architecture.
-
-### 🔑 Key Deliverables
-- UUID-based session creation
-- Secure JWT token generation
-- Stateless session identification
-- REST API foundation
-- Health-check endpoints
-
-### 🧠 Why It Matters
-This phase ensures **identity, security, and scalability** from day one.
-
-```text
-Client → Session API → JWT → Secure Identity
+2. Verify service health:
+```bash
+curl http://localhost:3000/health
+curl http://localhost:3000/health/live
+curl http://localhost:3000/health/ready
 ```
-✔ Production-ready backend base
 
-✔ Stateless & scalable design
-
-# 📱 Phase 2 — Mobile Scanner Engine
-
->Objective: Enable real-time barcode & QR scanning on mobile devices.
-
-## 🔑 Key Deliverables
-
-- ZXing-powered scanner
-
-- Rear-camera prioritization
-
-- Permission-safe camera access
-
-- Visual scanning indicators
-
-- Auto-reset after detection
-
-### 🧠 Why It Matters
-
->Mobile is the primary input surface.
-
-- This phase ensures reliability, speed, and UX clarity.
-
-✔ iOS + Android compatible
-
-✔ Zero silent failures
-
-# 🔄 Phase 3 — Real-Time Scan Synchronization
-
-> Objective: Sync mobile scan data live to desktop.
-
-## 🔑 Key Deliverables
-
-- WebSocket (WSS) bridge
-
-- JWT-authenticated connections
-
-- Session-based routing
-
-- Instant scan propagation
-
-- Multi-client handling
-
-
->Mobile → WebSocket → Node Server → Desktop
-
-### 🧠 Why It Matters
-
-Transforms scanning from isolated action to live system behavior.
-
-✔ Real-time
-
-✔ Zero refresh required
-
-# 🖥 Phase 4 — Desktop Control Panel
-
-> Objective: Provide a live desktop dashboard for scan consumption.
-
-## 🔑 Key Deliverables
-
-- Session creation UI
-
-- Live connection status
-
-- Scan result rendering
-
-- Visual state indicators
-
-- Elegant desktop UI
-
-### 🧠 Why It Matters
-
-# 🎨 Phase 5 — UX Polish & State Visibility
-
-> Objective: Eliminate ambiguity through visual feedback.
-
-## 🔑 Key Deliverables
-
-- Explicit scan states
-
-- Animated transitions
-
-- Status indicators (Idle → Scanning → Detected)
-
-- Error-safe UI paths
-
-Idle → Camera Ready → Scanning → Detected → Reset
-
-### 🧠 Why It Matters
-
-- Great systems explain themselves to users.
-
-✔ No dead states
-
-✔ No confusion
-
-# 🔐 Phase 6 — Security Hardening
-
-> Objective: Protect data flow and session integrity.
-
-## 🔑 Key Deliverables
-
-- JWT verification on WebSocket
-
-- Session isolation
-
-- Token expiration handling
-
-- Secure tunneling via Ngrok (WSS)
-
-### 🧠 Why It Matters
-
- -Security is not optional — it’s architectural.
-
-✔ Authenticated streams
-
-✔ Secure real-time traffic
-
-# 🧪 Phase 7 — End-to-End Testing & Validation
-
-> Objective: Validate system behavior under real conditions.
-
-## 🔑 Key Deliverables
-
-- Cross-device testing (iOS, Android, Desktop)
-
-- Network variability testing
-
-- Multiple session handling
-
-- Failure recovery validation
-
-### 🧠 Why It Matters
-
-- Confidence comes from proven execution, not assumptions.
-
-✔ Production confidence
-
-✔ Edge-case safe
-
-# 📚 Phase 8 — Documentation & Presentation
-
-> Objective: Make the system understandable, impressive, and transferable.
-
-## 🔑 Key Deliverables
-
-- Task-wise READMEs
-
-- Architecture explanations
-
-- GIF-based proofs
-
-
-
-## 🧠 Why It Matters
-
-- Great work deserves great presentation.
-
-✔ Client-ready
-
-✔ Recruiter-approved
-
-**🚀 Eight phases. One cohesive system.**  
-_Designed like a product. Built like an engineer._
-## 🧩 **Key Features**
-
-### 🔗 **1. QR Pairing**
-- Desktop app generates a secure QR code  
-- Phone scans → instant WebSocket connection  
-- Token-based session validation
-
-  
-![QR Pairing](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjFxd2ZiNDFyYWx2dGg0cDh5bTZyMDIwdWVubThucGNodWg3MjlwaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/LWocZxVYEzl8Y3LWIZ/giphy.gif)
-
-### 🔌 **2. USB Session**
-- Backup connection  
-- Uses ADB reverse port  
-- Same session security and handshake  
-
-### 🛰️ **3. Real-Time Barcode Streaming**
-- Ultra-low-latency WebSocket pipeline  
-- Push barcode → immediate desktop display  
-
-### 🧨 **4. Session Lifecycle**
-CREATE → PAIR → CONNECTED → ACTIVE → TERMINATE
-
-### 🖥️ **5. Windows Desktop App**
-- Electron-based  
-- QR generator  
-- Session dashboard  
-- Realtime barcode log  
-- CSV export  
-
-### 📱 **6. Mobile PWA Scanner**
-- Camera scanning via getUserMedia  
-- jsQR / ZXing for decoding  
-- Auto-focus & vibration feedback  
-
----
-
-<p align="center"><b>🏗️ SYSTEM ARCHITECTURE</b></p>
-
-
-```text
-                         ┌────────────────────────────┐
-                         │        Desktop App         │
-                         │     (Electron + React UI)  │
-                         └──────────────┬─────────────┘
-                                        │
-                               WebSocket│
-                                        │
-                         ┌──────────────▼─────────────┐
-                         │        Node.js Server      │
-                         │    (Express + WS + Auth)   │
-                         └──────────────┬─────────────┘
-                      QR Pairing / USB  │
-                                        │
-                         ┌──────────────▼─────────────┐
-                         │        Phone Scanner       │
-                         │       (PWA / Web App)      │
-                         └────────────────────────────┘
-```
----
-
-## 🧪 **Tech Stack**
-
-### **Desktop**
-- Electron  
-- React  
-- WebSocket client  
-- QR generator  
-
-### **Server**
-- Node.js  
-- Express  
-- WS (WebSocket)  
-- SQLite  
-
-### **Mobile**
-- PWA  
-- jsQR / ZXing  
-- Camera API  
-
----
-
-[//]: # (<p align="center"><b>📁 Folder Structure</b></p>)
-
-[//]: # (```text)
-
-[//]: # (barcode-pairing/)
-
-[//]: # (│)
-
-[//]: # (├── desktop-app/)
-
-[//]: # (│   ├── src/)
-
-[//]: # (│   │   ├── main.js)
-
-[//]: # (│   │   ├── preload.js)
-
-[//]: # (│   │   └── renderer/)
-
-[//]: # (│   ├── build/)
-
-[//]: # (│   └── dist/)
-
-[//]: # (│)
-
-[//]: # (├── server/)
-
-[//]: # (│   ├── src/)
-
-[//]: # (│   │   ├── routes/)
-
-[//]: # (│   │   ├── ws/)
-
-[//]: # (│   │   ├── services/)
-
-[//]: # (│   │   └── db/)
-
-[//]: # (│   ├── tests/)
-
-[//]: # (│   ├── .env.example)
-
-[//]: # (│   └── package.json)
-
-[//]: # (│)
-
-[//]: # (├── mobile-scanner/)
-
-[//]: # (│   ├── src/)
-
-[//]: # (│   │   ├── index.html)
-
-[//]: # (│   │   ├── scanner.js)
-
-[//]: # (│   │   └── styles.css)
-
-[//]: # (│   └── public/)
-
-[//]: # (│)
-
-[//]: # (├── docs/)
-
-[//]: # (│   ├── SRS.md)
-
-[//]: # (│   ├── ARCHITECTURE.md)
-
-[//]: # (│   ├── API_SPEC.md)
-
-[//]: # (│   └── USER_STORIES.md)
-
-[//]: # (│)
-
-[//]: # (└── README.md)
-
-[//]: # ()
-[//]: # (```)
----
-
-## ⚙️ **Environment Variables**
-```text
-`server/.env.example`
-PORT=3000
-WS_PORT=4000
-JWT_SECRET=replace_with_strong_key
-SESSION_TTL_SECONDS=180
-DATABASE_URL=sqlite:./data/dev.db
-```
----
-
-## ▶️ **Running the Project**
-
-### **Server**
+3. Optional local server-only workflow:
 ```bash
 cd server
 npm install
-npm run dev
-
-cd desktop-app
-npm install
-npm run dev
-
-cd mobile-scanner
-npm install
-npm run dev
-
-cd desktop-app
-npm run build
-npm run dist
+cp .env.example .env
+npm run migrate
+npm start
 ```
-🔐 Security Features
-Signed QR payload
-Token expiration
-WS authentication
-Sanitized barcode data
-Session expiry & force-terminate
 
-🧭 Roadmap
- BLE-based pairing
- Offline-first scanning mode
- Cloud sync with user accounts
- Multi-device session support
- 
-🤝 Contributing
-Pull requests are welcome!
-Follow the guidelines in CONTRIBUTING.md.
+4. Try SDK integration example:
+```bash
+cd examples/react
+npm install
+npm run dev
+```
 
-⭐ Support the Project
-If you like this project, don’t forget to star the repository 🌟
-Your support motivates future improvements!
+## SDK Usage Example
+```ts
+import { createEasyQRClient } from "@easyqr/sdk";
 
-📝 License
-MIT License — Free to use and modify.
+const client = createEasyQRClient({
+  baseUrl: "http://localhost:3000",
+  projectId: "demo_project",
+  apiKey: "demo_key"
+});
+
+client.on("connection.open", (e) => {
+  console.log("connected", e.sessionId, e.role);
+});
+
+client.on("scan.received", (e) => {
+  console.log("scan", e.scan.value, e.scan.format);
+  // map into inventory update API here
+});
+
+const session = await client.startHost();
+console.log("session", session.session.sessionId, session.mobileUrl);
+```
+
+## Observability & Reliability
+EasyQR includes operational visibility and lifecycle controls:
+- Health endpoints: `/health`, `/health/live`, `/health/ready`
+- Metrics endpoint: `/metrics`
+- Structured logging with request correlation and WebSocket connection context
+- Graceful shutdown/drain behavior for HTTP + WebSocket paths
+- Restart-safe persistence with PostgreSQL and multi-instance coordination via Redis
+
+## CI/CD & DevOps
+The repository includes a GitHub Actions CI workflow that enforces deterministic checks:
+- Install job
+- Server test/typecheck gates
+- SDK typecheck/build/test gates
+- Build artifact generation for server and SDK outputs
+
+Deployment/rollback runbooks and scripts are included under `deploy/` and `docs/phase-5/`.
+
+## Security Model
+Implemented security controls include:
+- Project-scoped authentication for API usage
+- Hashed API key storage and key lifecycle controls
+- Tenant access enforcement (cross-project protections)
+- JWT-backed WebSocket session context validation
+- Input validation and standardized API error envelopes
+- Rate limiting controls for API and WebSocket paths
+
+## Project Phases
+Execution is documented phase-by-phase in `docs/`:
+- `docs/phase-1/`: stability baseline
+- `docs/phase-2/`: persistence and scale foundations
+- `docs/phase-3/`: security and tenant controls
+- `docs/phase-5/`: deployment, lifecycle, CI, observability
+- `docs/phase-6/`: acceptance hardening planning
+
+Each phase includes plan, test matrix, execution report, and proof artifacts.
+
+## Production Readiness
+Current repository state is deployable and integration-capable:
+- Runtime stack supports persistent multi-instance operation
+- SDK supports typed client integration for session and scan events
+- Operational controls (metrics, health, draining, rollback scripts) are in place
+- Phase-based engineering documentation supports auditability and handoff
+
+## Roadmap
+Near-term productization priorities:
+- Premium desktop host UX
+- Premium mobile scanner UX
+- Client onboarding/provisioning workflows
+- Delivery packaging for enterprise implementation teams
+
+## Contributing
+- Use focused branches and clear commit messages.
+- Keep changes aligned with documented phase plans.
+- Add/update tests for behavior changes.
+- Update phase docs when introducing operational or architecture-impacting changes.
+
+## License
+MIT License. See `LICENSE`.
+
 
 <p align="center"> <b>Built with ⚡ passion, 📱 creativity, and 🧠 innovation.</b> </p>
 

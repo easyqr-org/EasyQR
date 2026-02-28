@@ -1,0 +1,30 @@
+
+> easyqr-service@1.0.0 verify:phase1
+> npm test
+
+
+> easyqr-service@1.0.0 test
+> node --test test/**/*.test.js
+
+✔ requestContext generates and sets request id (0.668292ms)
+✔ requestContext reuses incoming x-request-id (0.079667ms)
+✔ validateCreateSession rejects missing projectId with app error (0.143583ms)
+✔ validateCreateSession normalizes valid payload (0.479125ms)
+✔ notFoundHandler returns standardized error envelope (0.129208ms)
+✔ errorHandler returns standardized client error envelope (0.13225ms)
+✔ errorHandler masks unexpected errors as internal server error (0.441083ms)
+✔ accepts a valid scan payload (1.239291ms)
+✔ rejects duplicate scan payloads for same session (0.138541ms)
+✔ rejects scan payload when sessionId mismatches socket session (0.121166ms)
+✔ rejects invalid scan payload shape (0.102292ms)
+✔ creates a session with expiry and default state (0.502708ms)
+✔ detects expired session by expiresAt (0.109084ms)
+✔ terminateSession sets EXPIRED when reason is expired (0.11475ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 46.340292

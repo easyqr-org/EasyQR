@@ -1,0 +1,36 @@
+node_modules/
+**/node_modules/
+
+dist/
+**/dist/
+build/
+**/build/
+coverage/
+**/coverage/
+
+.env*
+**/.env*
+!.env.example
+!**/.env.example
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+.DS_Store
+**/.DS_Store
+
+# Docker runtime data and local volumes
+postgres_data/
+redis_data/
+.docker/
+**/.docker/
+docker-data/
+docker_volumes/
+
+# Local package/build artifacts
+.npm-cache/
+**/.npm-cache/
+*.tgz
+*.tsbuildinfo

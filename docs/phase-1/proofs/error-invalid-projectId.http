@@ -1,0 +1,27 @@
+### Invalid projectId Error Proof (Phase 1)
+
+Environment note:
+- Direct HTTP capture is constrained by sandbox socket restrictions.
+- Error envelope is validated by middleware tests and route error handling.
+
+POST /api/sessions
+Content-Type: application/json
+
+{
+  "apiKey": "test_key"
+}
+
+Expected 400 Response Body:
+{
+  "error": {
+    "code": "PROJECT_ID_REQUIRED",
+    "message": "projectId is required",
+    "requestId": "<uuid>"
+  }
+}
+
+Validated by:
+- `server/src/middleware/validateCreateSession.js`
+- `server/src/middleware/errorHandlers.js`
+- `server/test/httpMiddleware.test.js`
+- `docs/phase-1/proofs/test-run.txt`

@@ -1,0 +1,9 @@
+export type EasyQRErrorCode =
+  | "E_CONFIG_INVALID"
+  | "E_HTTP_UNAUTHORIZED"
+  | "E_HTTP_RATE_LIMITED"
+  | "E_HTTP_BAD_RESPONSE"
+  | "E_WS_CONNECT_FAILED"
+  | "E_WS_CLOSED"
+  | "E_WS_PROTOCOL"
+  | "E_INTERNAL";

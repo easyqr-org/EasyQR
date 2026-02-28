@@ -1,0 +1,29 @@
+# Wave 2 Legacy Compatibility Flag Proof
+
+## Legacy disabled (EASYQR_ALLOW_LEGACY_KEYS=false)
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+x-request-id: 1173522a-cea9-4c04-b224-2cf021f9a63b
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 139
+ETag: W/"8b-8jBAgHJ55ku6XNov4SWWlPIQw2w"
+Date: Tue, 24 Feb 2026 11:51:40 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"INVALID_PROJECT_CREDENTIALS","message":"Invalid project credentials","requestId":"1173522a-cea9-4c04-b224-2cf021f9a63b"}}
+
+## Legacy enabled (EASYQR_ALLOW_LEGACY_KEYS=true)
+HTTP/1.1 201 Created
+X-Powered-By: Express
+x-request-id: 16fa66f9-6994-4dfe-9a49-7120a2e1d882
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 934
+ETag: W/"3a6-cGwj7UUJBnbZk25pzYKCtm0E8jg"
+Date: Tue, 24 Feb 2026 11:52:02 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"sessionId":"3e80bd69-5715-439f-a09b-4c002426cb3d","wsToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIzZTgwYmQ2OS01NzE1LTQzOWYtYTA5Yi00YzAwMjQyNmNiM2QiLCJwaWQiOiJsZWdhY3lfcHJvamVjdCIsImlhdCI6MTc3MTkzMzkyMiwiZXhwIjoxNzcxOTM0NTIyfQ.8g1MVzl2D-t9IGr1OCqS2G0g8hzkMJLsnuC4c3tFbYM","desktopUrl":"http://localhost:3000/session/3e80bd69-5715-439f-a09b-4c002426cb3d?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIzZTgwYmQ2OS01NzE1LTQzOWYtYTA5Yi00YzAwMjQyNmNiM2QiLCJwaWQiOiJsZWdhY3lfcHJvamVjdCIsImlhdCI6MTc3MTkzMzkyMiwiZXhwIjoxNzcxOTM0NTIyfQ.8g1MVzl2D-t9IGr1OCqS2G0g8hzkMJLsnuC4c3tFbYM","mobileUrl":"http://localhost:3000/mobile?sessionId=3e80bd69-5715-439f-a09b-4c002426cb3d&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiIzZTgwYmQ2OS01NzE1LTQzOWYtYTA5Yi00YzAwMjQyNmNiM2QiLCJwaWQiOiJsZWdhY3lfcHJvamVjdCIsImlhdCI6MTc3MTkzMzkyMiwiZXhwIjoxNzcxOTM0NTIyfQ.8g1MVzl2D-t9IGr1OCqS2G0g8hzkMJLsnuC4c3tFbYM","expiresAt":1771934522849}

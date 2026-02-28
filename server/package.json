@@ -1,0 +1,31 @@
+{
+  "name": "easyqr-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "EasyQR service (Express + WebSocket)",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "node --test test/**/*.test.js",
+    "verify:phase1": "npm test",
+    "migrate": "node scripts/run-migrations.js",
+    "verify:phase2": "npm test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.18.0",
+    "redis": "^5.8.2",
+    "uuid": "^9.0.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

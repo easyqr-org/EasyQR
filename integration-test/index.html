@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyQR External Integration Test</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; }
+      .row { margin: 8px 0; }
+      .label { font-weight: 600; }
+      #error { color: #b42318; }
+      ul { padding-left: 20px; }
+    </style>
+  </head>
+  <body>
+    <h1>EasyQR External Integration</h1>
+    <div class="row"><button id="start">Start Host</button> <button id="disconnect">Disconnect</button></div>
+    <div class="row"><span class="label">Connection:</span> <span id="connection">idle</span></div>
+    <div class="row"><span class="label">Session ID:</span> <span id="sessionId">-</span></div>
+    <div class="row"><span class="label">Session State:</span> <span id="sessionState">-</span></div>
+    <div class="row"><span class="label">Mobile URL:</span> <a id="mobileUrl" href="#" target="_blank" rel="noreferrer">-</a></div>
+    <div class="row" id="error"></div>
+    <h3>Live Scans</h3>
+    <ul id="scans"></ul>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

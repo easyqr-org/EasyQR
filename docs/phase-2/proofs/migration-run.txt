@@ -1,0 +1,5 @@
+
+> easyqr-service@1.0.0 migrate
+> node scripts/run-migrations.js
+
+applied 001_init_easyqr.sql

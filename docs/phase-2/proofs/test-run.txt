@@ -1,0 +1,34 @@
+
+> easyqr-service@1.0.0 verify:phase2
+> npm test
+
+
+> easyqr-service@1.0.0 test
+> node --test test/**/*.test.js
+
+✔ buildConfig accepts default memory backend (0.462334ms)
+✔ buildConfig rejects postgres backend without DATABASE_URL (0.209459ms)
+✔ buildConfig rejects redis enabled without REDIS_URL (0.073208ms)
+✔ createDataLayer uses memory mode when configured (1.055834ms)
+✔ requestContext generates and sets request id (0.607125ms)
+✔ requestContext reuses incoming x-request-id (0.082916ms)
+✔ validateCreateSession rejects missing projectId with app error (0.144917ms)
+✔ validateCreateSession normalizes valid payload (0.416667ms)
+✔ notFoundHandler returns standardized error envelope (0.103666ms)
+✔ errorHandler returns standardized client error envelope (0.110667ms)
+✔ errorHandler masks unexpected errors as internal server error (0.072292ms)
+✔ accepts a valid scan payload (1.19475ms)
+✔ rejects duplicate scan payloads for same session (0.108083ms)
+✔ rejects scan payload when sessionId mismatches socket session (0.09025ms)
+✔ rejects invalid scan payload shape (0.104125ms)
+✔ creates a session with expiry and default state (0.516542ms)
+✔ detects expired session by expiresAt (0.113542ms)
+✔ terminateSession sets EXPIRED when reason is expired (0.116708ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 48.96975

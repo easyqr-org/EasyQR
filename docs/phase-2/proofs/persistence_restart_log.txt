@@ -1,0 +1,1 @@
+{"timestamp":"2026-02-24T11:00:12.686Z","level":"info","event":"service.started","service":"easyqr-service","port":3000,"desktopPath":"/","mobilePath":"/mobile","storageBackend":"postgres","redisEnabled":true,"instanceId":"a9173c00-3092-4ee5-9efa-69472387b328"}

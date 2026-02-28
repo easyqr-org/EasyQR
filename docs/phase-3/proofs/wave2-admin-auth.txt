@@ -1,0 +1,32 @@
+# Wave 2 Admin Auth Proof
+
+Missing admin token (expected 401):
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+x-request-id: 5508b64c-76bc-4f69-aaa2-fe6429c469b8
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 115
+ETag: W/"73-rzkYPqvhDE2d6gkWTNQaKUI1i4A"
+Date: Tue, 24 Feb 2026 11:50:54 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"ADMIN_UNAUTHORIZED","message":"Unauthorized","requestId":"5508b64c-76bc-4f69-aaa2-fe6429c469b8"}}
+
+Invalid admin token (expected 401):
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+x-request-id: 71694504-00eb-45d0-97a6-9019c8aad3bb
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 115
+ETag: W/"73-/57CChNyNr8lubY0ZF1PJGB+9Wk"
+Date: Tue, 24 Feb 2026 11:50:54 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"ADMIN_UNAUTHORIZED","message":"Unauthorized","requestId":"71694504-00eb-45d0-97a6-9019c8aad3bb"}}
+
+Valid admin token (expected success):
+{"items":[{"id":"fe077e74-cb67-4b14-a807-38c23bda220d","projectId":null,"actorType":"system","eventType":"AUTH_FAILURE","metadataJson":{"path":"/api/admin/audit","reason":"INVALID_ADMIN_TOKEN","requestId":"71694504-00eb-45d0-97a6-9019c8aad3bb"},"createdAt":"2026-02-24T11:50:54.128Z"},{"id":"8292ad1c-7abb-47f9-8009-8b662d5787b0","projectId":null,"actorType":"system","eventType":"AUTH_FAILURE","metadataJson":{"path":"/api/admin/audit","reason":"MISSING_ADMIN_TOKEN","requestId":"5508b64c-76bc-4f69-aaa2-fe6429c469b8"},"createdAt":"2026-02-24T11:50:54.114Z"}],"total":16,"limit":2,"offset":0}

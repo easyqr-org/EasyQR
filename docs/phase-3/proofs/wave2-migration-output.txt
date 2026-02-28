@@ -1,0 +1,7 @@
+
+> easyqr-service@1.0.0 migrate
+> node scripts/run-migrations.js
+
+applied 001_init_easyqr.sql
+applied 002_security_api_keys_audit.sql
+applied 003_tenant_isolation_expiry_constraints.sql

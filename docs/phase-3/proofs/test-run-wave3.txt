@@ -1,0 +1,79 @@
+
+> easyqr-service@1.0.0 test
+> node --test test/**/*.test.js
+
+✔ generateApiKey returns 32+ byte random key (3.417875ms)
+✔ hashApiKey is deterministic and not equal to raw key (2.938ms)
+✔ constantTimeEqual returns true only for exact match (0.117ms)
+✔ verifyApiKey validates raw key against stored hash (0.115ms)
+✔ buildConfig accepts default memory backend (0.618125ms)
+✔ buildConfig rejects postgres backend without DATABASE_URL (0.282666ms)
+✔ buildConfig rejects redis enabled without REDIS_URL (0.08825ms)
+✔ buildConfig supports legacy STORAGE_BACKEND and REDIS_ENABLED aliases (0.107333ms)
+✔ buildConfig parses EASYQR_ALLOW_LEGACY_KEYS flag (0.0875ms)
+✔ buildConfig applies Wave 3 rate limit defaults (0.071417ms)
+✔ buildConfig applies Wave 3 rate limit overrides (0.067ms)
+✔ createDataLayer uses memory mode when configured (0.597958ms)
+✔ requestContext generates and sets request id (0.672584ms)
+✔ requestContext reuses incoming x-request-id (0.08525ms)
+✔ validateCreateSession rejects missing projectId with app error (0.149292ms)
+✔ validateCreateSession normalizes valid payload (0.411375ms)
+✔ notFoundHandler returns standardized error envelope (0.109042ms)
+✔ errorHandler returns standardized client error envelope (0.118416ms)
+✔ errorHandler masks unexpected errors as internal server error (0.073125ms)
+{"timestamp":"2026-02-26T02:26:09.243Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-rl"}
+{"timestamp":"2026-02-26T02:26:09.243Z","level":"warn","event":"rate_limit.denied","service":"rate-limit-test","scope":"project","projectId":"project-rl","ip":"1.1.1.1","retryAfterSeconds":60}
+{"timestamp":"2026-02-26T02:26:09.244Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-a"}
+{"timestamp":"2026-02-26T02:26:09.244Z","level":"warn","event":"rate_limit.denied","service":"rate-limit-test","scope":"ip","projectId":"project-b","ip":"2.2.2.2","retryAfterSeconds":60}
+{"timestamp":"2026-02-26T02:26:09.245Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-ok"}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-reset"}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"warn","event":"rate_limit.denied","service":"rate-limit-test","scope":"project","projectId":"project-reset","ip":"4.4.4.4","retryAfterSeconds":60}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-reset"}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"warn","event":"rate_limit.degraded","service":"rate-limit-test","scope":"project","projectId":"project-degraded","ip":"5.5.5.5"}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"warn","event":"rate_limit.degraded","service":"rate-limit-test","scope":"ip","projectId":"project-degraded","ip":"5.5.5.5"}
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"info","event":"scan.history.read","service":"rate-limit-test","requestId":"rl-test-request","sessionId":null,"count":0,"projectId":"project-degraded"}
+{"timestamp":"2026-02-26T02:26:09.247Z","level":"warn","event":"rate_limit.ws_denied","service":"ws-rl-test","scope":"project","projectId":"ws-project-a","ip":"8.8.8.8","retryAfterSeconds":60}
+{"timestamp":"2026-02-26T02:26:09.247Z","level":"warn","event":"rate_limit.ws_denied","service":"ws-rl-test","scope":"ip","projectId":"ws-project-b","ip":"9.9.9.9","retryAfterSeconds":60}
+{"timestamp":"2026-02-26T02:26:09.247Z","level":"warn","event":"rate_limit.ws_degraded","service":"ws-rl-test","scope":"project","projectId":"ws-project-degraded","ip":"11.11.11.11"}
+{"timestamp":"2026-02-26T02:26:09.247Z","level":"warn","event":"rate_limit.ws_degraded","service":"ws-rl-test","scope":"ip","projectId":"ws-project-degraded","ip":"11.11.11.11"}
+✔ project exceeds limit returns 429 (3.49475ms)
+✔ ip exceeds limit returns 429 (0.611084ms)
+✔ below thresholds succeeds (0.9295ms)
+✔ window reset after 60 seconds allows requests again (0.563375ms)
+✔ degraded mode allows request when redis throws (0.526583ms)
+✔ WS project limit exceeded returns denied decision (0.214084ms)
+✔ WS IP limit exceeded returns denied decision (0.12825ms)
+✔ WS below threshold returns allowed decision (0.066125ms)
+✔ WS degraded mode allows when redis fails (0.1255ms)
+✔ below threshold is allowed (0.636292ms)
+✔ exceed threshold is denied (0.112125ms)
+✔ remaining decreases correctly (0.410292ms)
+✔ retryAfterSec is > 0 when denied (0.179583ms)
+✔ separate project keys do not interfere (0.12575ms)
+✔ separate IP keys do not interfere (1.965292ms)
+✔ redis failure returns degraded allow response (0.118667ms)
+✔ accepts a valid scan payload (2.484042ms)
+✔ rejects duplicate scan payloads for same session (0.12075ms)
+✔ rejects scan payload when sessionId mismatches socket session (0.096792ms)
+✔ rejects invalid scan payload shape (0.105917ms)
+{"timestamp":"2026-02-26T02:26:09.246Z","level":"info","event":"scan.history.read","service":"test-service","requestId":"test-request-id","sessionId":"session-a-2","count":0,"projectId":"tenant-A"}
+{"timestamp":"2026-02-26T02:26:09.249Z","level":"info","event":"session.created","service":"test-service","requestId":"test-request-id","sessionId":"7d092c41-b4e3-4809-8b7e-4672a458b84b","projectId":"legacy-tenant","expiresAt":1772073069248}
+✔ rotated key remains valid until revoked and revoked key fails (2.747625ms)
+✔ rotate and revoke endpoints create audit entries (0.762458ms)
+✔ failed auth writes AUTH_FAILURE audit event (1.113084ms)
+✔ cross-tenant session access is rejected with 403 (0.494583ms)
+✔ valid tenant access to own session scans succeeds (0.620042ms)
+✔ expired session scan query is rejected (0.444458ms)
+✔ admin audit endpoint requires valid admin token (0.440625ms)
+✔ legacy key fallback obeys EASYQR_ALLOW_LEGACY_KEYS flag (2.375291ms)
+✔ creates a session with expiry and default state (0.517375ms)
+✔ detects expired session by expiresAt (0.111792ms)
+✔ terminateSession sets EXPIRED when reason is expired (0.118292ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 178.669334

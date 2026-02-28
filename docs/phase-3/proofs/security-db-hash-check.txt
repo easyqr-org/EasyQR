@@ -1,0 +1,14 @@
+SELECT id, project_id, version, revoked, api_key_hash FROM project_api_keys WHERE project_id = 'wave1_project' ORDER BY version;
+                  id                  |  project_id   | version | revoked |                           api_key_hash                           
+--------------------------------------+---------------+---------+---------+------------------------------------------------------------------
+ a55d207e-f495-4ffc-9110-f9dc1058a3d7 | wave1_project |       1 | t       | ada3ce0bd0f1577d45cef52d0a1e99ac49f034d366c8b0a74b28285ff2bbf83b
+ ae750fee-c93f-4734-9bf6-9b373789df87 | wave1_project |       2 | f       | 3b80123cee68516c3890129b6e73e52d332b615240cc23a1708d67fbe334dfbe
+(2 rows)
+
+
+SELECT COUNT(*) AS non_sha256_rows FROM project_api_keys WHERE project_id = 'wave1_project' AND api_key_hash !~ '^[0-9a-f]{64}$';
+ non_sha256_rows 
+-----------------
+               0
+(1 row)
+

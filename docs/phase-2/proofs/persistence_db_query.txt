@@ -1,0 +1,11 @@
+COMMAND 1 (as requested): docker exec -i server-postgres-1 psql -U easyqr -d easyqr -c "SELECT * FROM sessions;"
+ERROR:  relation "sessions" does not exist
+LINE 1: SELECT * FROM sessions;
+                      ^
+
+COMMAND 2 (actual EasyQR table): docker exec -i server-postgres-1 psql -U easyqr -d easyqr -c "SELECT id, project_id, state, created_at_ms, expires_at_ms FROM easyqr_sessions ORDER BY created_at_ms DESC LIMIT 5;"
+                  id                  | project_id  |      state      | created_at_ms | expires_at_ms 
+--------------------------------------+-------------+-----------------+---------------+---------------
+ 81dd4069-225f-45b4-9cb7-8540c9a18b9e | dev_project | PENDING_DESKTOP | 1771930785571 | 1771931385571
+(1 row)
+

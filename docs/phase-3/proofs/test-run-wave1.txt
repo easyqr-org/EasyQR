@@ -1,0 +1,38 @@
+
+> easyqr-service@1.0.0 test
+> node --test test/**/*.test.js
+
+✔ generateApiKey returns 32+ byte random key (0.5465ms)
+✔ hashApiKey is deterministic and not equal to raw key (0.346958ms)
+✔ constantTimeEqual returns true only for exact match (0.088458ms)
+✔ verifyApiKey validates raw key against stored hash (0.084625ms)
+✔ buildConfig accepts default memory backend (0.485125ms)
+✔ buildConfig rejects postgres backend without DATABASE_URL (0.211792ms)
+✔ buildConfig rejects redis enabled without REDIS_URL (0.07725ms)
+✔ buildConfig supports legacy STORAGE_BACKEND and REDIS_ENABLED aliases (0.093333ms)
+✔ createDataLayer uses memory mode when configured (0.503333ms)
+✔ requestContext generates and sets request id (0.573125ms)
+✔ requestContext reuses incoming x-request-id (0.083292ms)
+✔ validateCreateSession rejects missing projectId with app error (0.142167ms)
+✔ validateCreateSession normalizes valid payload (0.560708ms)
+✔ notFoundHandler returns standardized error envelope (0.144583ms)
+✔ errorHandler returns standardized client error envelope (0.157083ms)
+✔ errorHandler masks unexpected errors as internal server error (0.860584ms)
+✔ accepts a valid scan payload (4.831875ms)
+✔ rejects duplicate scan payloads for same session (0.163041ms)
+✔ rejects scan payload when sessionId mismatches socket session (0.106334ms)
+✔ rejects invalid scan payload shape (0.360458ms)
+✔ rotated key remains valid until revoked and revoked key fails (2.564916ms)
+✔ rotate and revoke endpoints create audit entries (0.944042ms)
+✔ failed auth writes AUTH_FAILURE audit event (0.515958ms)
+✔ creates a session with expiry and default state (0.567625ms)
+✔ detects expired session by expiresAt (0.112792ms)
+✔ terminateSession sets EXPIRED when reason is expired (0.116083ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 113.898083

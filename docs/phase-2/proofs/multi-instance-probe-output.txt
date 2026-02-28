@@ -1,0 +1,10 @@
+sessionId 30555305-edcd-4357-a4de-19e9729bce0a
+probeValue PROOF-1771931094834
+host_open true
+host_msg_type SESSION_STATE
+host_state ACTIVE
+host_msg_type SCAN
+host_scan_received PROOF-1771931094834
+stateReceived true
+scanReceived true
+mobile_close 1005 

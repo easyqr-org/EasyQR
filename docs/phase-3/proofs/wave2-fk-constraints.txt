@@ -1,0 +1,6 @@
+       constraint_name        |   table_name    | column_name | foreign_table_name | foreign_column_name 
+------------------------------+-----------------+-------------+--------------------+---------------------
+ easyqr_scans_session_id_fkey | easyqr_scans    | session_id  | easyqr_sessions    | id
+ fk_easyqr_sessions_project   | easyqr_sessions | project_id  | easyqr_projects    | id
+(2 rows)
+

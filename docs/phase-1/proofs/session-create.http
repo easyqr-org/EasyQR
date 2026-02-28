@@ -1,0 +1,28 @@
+### Session Create Proof (Phase 1)
+
+Environment note:
+- Direct HTTP runtime capture is blocked in this sandbox because local listen/bind is not permitted.
+- Contract below is validated by automated tests and route implementation.
+
+POST /api/sessions
+Content-Type: application/json
+
+{
+  "projectId": "test_project",
+  "apiKey": "test_key"
+}
+
+Expected 201 Response Body:
+{
+  "sessionId": "<uuid>",
+  "wsToken": "<jwt>",
+  "desktopUrl": "http://<host>/session/<sessionId>?token=<token>",
+  "mobileUrl": "http://<host>/mobile?sessionId=<sessionId>&token=<token>",
+  "expiresAt": 1760000000000
+}
+
+Validated by:
+- `server/src/index.js` session route implementation.
+- `server/test/httpMiddleware.test.js` (error/request-id standards).
+- `server/test/sessionStore.test.js` (session lifecycle).
+- `docs/phase-1/proofs/test-run.txt` (14 passing tests).

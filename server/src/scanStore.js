@@ -23,12 +23,10 @@ function getHash(p) {
 
 function saveScan(sessionId, payload) {
   if (!isValidPayload(payload)) {
-    console.log("❌ Invalid scan payload rejected");
     return false;
   }
 
   if (payload.sessionId !== sessionId) {
-    console.log("❌ Session mismatch in scan payload");
     return false;
   }
 
@@ -36,7 +34,6 @@ function saveScan(sessionId, payload) {
   const lastHash = lastHashBySession.get(sessionId) || null;
 
   if (hash === lastHash) {
-    console.log("🔁 Duplicate scan ignored");
     return false;
   }
 
@@ -47,7 +44,6 @@ function saveScan(sessionId, payload) {
   if (arr.length > 50) arr.shift();
   scansBySession.set(sessionId, arr);
 
-  console.log("🗄 Scan stored:", payload.value, "for session", sessionId);
   return true;
 }
 
@@ -86,4 +82,3 @@ module.exports = {
   getAllScans,
   clearScans,
 };
-

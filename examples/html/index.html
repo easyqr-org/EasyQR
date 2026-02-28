@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EasyQR Vanilla HTML Starter</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@easyqr/sdk": "../../sdk/dist/esm/index.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <main class="container">
+      <h1>EasyQR Vanilla HTML Starter</h1>
+
+      <div class="actions">
+        <button id="create-session-btn" type="button">Create Session</button>
+        <button id="disconnect-btn" type="button">Disconnect</button>
+      </div>
+
+      <section class="status-grid">
+        <div class="status-item"><span>Connection State:</span> <strong id="connection-state">idle</strong></div>
+        <div class="status-item"><span>Session ID:</span> <strong id="session-id">-</strong></div>
+        <div class="status-item"><span>Session State:</span> <strong id="session-state">-</strong></div>
+        <div class="status-item">
+          <span>Mobile URL:</span>
+          <a id="mobile-url" href="#" target="_blank" rel="noreferrer">-</a>
+        </div>
+      </section>
+
+      <section class="error-box" id="error-box" hidden></section>
+
+      <section>
+        <h2>Live Scan Values</h2>
+        <ul id="scan-list" class="scan-list"></ul>
+      </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

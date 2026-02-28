@@ -1,0 +1,24 @@
+# Wave 2 Cross-Tenant Rejection Proof
+
+Tenant A create response:
+{"projectId":"tenantA_wave2","version":1,"apiKey":"1644850f6df46fb8183cd2272813cdfea8cd1a1bf74c2b3b8cb0937aae597a6a"}
+
+Tenant B create response:
+{"projectId":"tenantB_wave2","version":1,"apiKey":"25359effc525de6b97a4e03840a64e48e5922442c8129531ed97b576ddd5ed83"}
+
+Tenant A session create response:
+{"sessionId":"8cd910db-2b55-432b-8345-76db3518d29e","wsToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4Y2Q5MTBkYi0yYjU1LTQzMmItODM0NS03NmRiMzUxOGQyOWUiLCJwaWQiOiJ0ZW5hbnRBX3dhdmUyIiwiaWF0IjoxNzcxOTMzNzYzLCJleHAiOjE3NzE5MzM3NjV9.qxoW5X7iAiCVZHyB0oRHI4C4Rs1AVfj6alvWYkILdHA","desktopUrl":"http://localhost:3000/session/8cd910db-2b55-432b-8345-76db3518d29e?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4Y2Q5MTBkYi0yYjU1LTQzMmItODM0NS03NmRiMzUxOGQyOWUiLCJwaWQiOiJ0ZW5hbnRBX3dhdmUyIiwiaWF0IjoxNzcxOTMzNzYzLCJleHAiOjE3NzE5MzM3NjV9.qxoW5X7iAiCVZHyB0oRHI4C4Rs1AVfj6alvWYkILdHA","mobileUrl":"http://localhost:3000/mobile?sessionId=8cd910db-2b55-432b-8345-76db3518d29e&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4Y2Q5MTBkYi0yYjU1LTQzMmItODM0NS03NmRiMzUxOGQyOWUiLCJwaWQiOiJ0ZW5hbnRBX3dhdmUyIiwiaWF0IjoxNzcxOTMzNzYzLCJleHAiOjE3NzE5MzM3NjV9.qxoW5X7iAiCVZHyB0oRHI4C4Rs1AVfj6alvWYkILdHA","expiresAt":1771933765742}
+
+Cross-tenant access attempt (B -> A session) expected 403:
+HTTP/1.1 403 Forbidden
+X-Powered-By: Express
+x-request-id: f2fbc0ef-b782-44fb-9808-ef477aa37b7c
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 147
+ETag: W/"93-4AFB6uXcSOmLEp/VyIQpynWeI9M"
+Date: Tue, 24 Feb 2026 11:49:23 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"CROSS_PROJECT_ACCESS_DENIED","message":"Cross-project access is not allowed","requestId":"f2fbc0ef-b782-44fb-9808-ef477aa37b7c"}}

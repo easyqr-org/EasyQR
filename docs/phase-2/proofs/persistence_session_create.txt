@@ -1,0 +1,18 @@
+REQUEST
+curl -i -X POST http://localhost:3000/api/sessions \
+  -H "Content-Type: application/json" \
+  -d '{"projectId":"dev_project","apiKey":"dev_key","context":{"itemId":"PERSIST-001"}}'
+
+RESPONSE
+HTTP/1.1 201 Created
+X-Powered-By: Express
+x-request-id: ee9e79f5-2e96-49e9-81e4-bac7c6159b7c
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 922
+ETag: W/"39a-OkM5kEE1ByJIBF9OAxeZ36gzZs0"
+Date: Tue, 24 Feb 2026 10:59:45 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"sessionId":"81dd4069-225f-45b4-9cb7-8540c9a18b9e","wsToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4MWRkNDA2OS0yMjVmLTQ1YjQtOWNiNy04NTQwYzlhMThiOWUiLCJwaWQiOiJkZXZfcHJvamVjdCIsImlhdCI6MTc3MTkzMDc4NSwiZXhwIjoxNzcxOTMxMzg1fQ.4x0EMUYyvLLy3Ko4HIehRjV1N8LSfFMen4LSG8jExYk","desktopUrl":"http://localhost:3000/session/81dd4069-225f-45b4-9cb7-8540c9a18b9e?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4MWRkNDA2OS0yMjVmLTQ1YjQtOWNiNy04NTQwYzlhMThiOWUiLCJwaWQiOiJkZXZfcHJvamVjdCIsImlhdCI6MTc3MTkzMDc4NSwiZXhwIjoxNzcxOTMxMzg1fQ.4x0EMUYyvLLy3Ko4HIehRjV1N8LSfFMen4LSG8jExYk","mobileUrl":"http://localhost:3000/mobile?sessionId=81dd4069-225f-45b4-9cb7-8540c9a18b9e&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI4MWRkNDA2OS0yMjVmLTQ1YjQtOWNiNy04NTQwYzlhMThiOWUiLCJwaWQiOiJkZXZfcHJvamVjdCIsImlhdCI6MTc3MTkzMDc4NSwiZXhwIjoxNzcxOTMxMzg1fQ.4x0EMUYyvLLy3Ko4HIehRjV1N8LSfFMen4LSG8jExYk","expiresAt":1771931385571}

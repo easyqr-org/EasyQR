@@ -1,0 +1,17 @@
+{
+  "name": "easyqr-integration-test",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build"
+  },
+  "dependencies": {
+    "@easyqr/sdk": "file:../sdk"
+  },
+  "devDependencies": {
+    "typescript": "file:../examples/react/node_modules/typescript",
+    "vite": "file:../examples/react/node_modules/vite"
+  }
+}

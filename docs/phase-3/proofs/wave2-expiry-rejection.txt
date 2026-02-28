@@ -1,0 +1,21 @@
+# Wave 2 Expiry Rejection Proof
+
+Project create response:
+{"projectId":"tenantEXP_wave2","version":1,"apiKey":"fc46e787bb96db48ebeb6bda552c71ab7a3e2a3416d58a7777be010b35a4cec0"}
+
+Session create response:
+{"sessionId":"907bf4a6-c30a-4dbc-8c96-481b0ef8ce10","wsToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI5MDdiZjRhNi1jMzBhLTRkYmMtOGM5Ni00ODFiMGVmOGNlMTAiLCJwaWQiOiJ0ZW5hbnRFWFBfd2F2ZTIiLCJpYXQiOjE3NzE5MzM3NzIsImV4cCI6MTc3MTkzMzc3NH0.PR8CkErtERnY8N8NCvHbZccji0ZuutVIZWizSNiGrLA","desktopUrl":"http://localhost:3000/session/907bf4a6-c30a-4dbc-8c96-481b0ef8ce10?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI5MDdiZjRhNi1jMzBhLTRkYmMtOGM5Ni00ODFiMGVmOGNlMTAiLCJwaWQiOiJ0ZW5hbnRFWFBfd2F2ZTIiLCJpYXQiOjE3NzE5MzM3NzIsImV4cCI6MTc3MTkzMzc3NH0.PR8CkErtERnY8N8NCvHbZccji0ZuutVIZWizSNiGrLA","mobileUrl":"http://localhost:3000/mobile?sessionId=907bf4a6-c30a-4dbc-8c96-481b0ef8ce10&token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzaWQiOiI5MDdiZjRhNi1jMzBhLTRkYmMtOGM5Ni00ODFiMGVmOGNlMTAiLCJwaWQiOiJ0ZW5hbnRFWFBfd2F2ZTIiLCJpYXQiOjE3NzE5MzM3NzIsImV4cCI6MTc3MTkzMzc3NH0.PR8CkErtERnY8N8NCvHbZccji0ZuutVIZWizSNiGrLA","expiresAt":1771933774945}
+
+Expired session access after TTL wait (expected 410):
+HTTP/1.1 410 Gone
+X-Powered-By: Express
+x-request-id: f6882144-3d23-4484-bba0-9291d02a952a
+Vary: Origin
+Content-Type: application/json; charset=utf-8
+Content-Length: 115
+ETag: W/"73-cKhltUVSZFfntWvXT1VmKg9RYb0"
+Date: Tue, 24 Feb 2026 11:49:35 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":{"code":"SESSION_EXPIRED","message":"Session expired","requestId":"f6882144-3d23-4484-bba0-9291d02a952a"}}

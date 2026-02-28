@@ -1,0 +1,46 @@
+
+> easyqr-service@1.0.0 test
+> node --test test/**/*.test.js
+
+✔ generateApiKey returns 32+ byte random key (8.401791ms)
+✔ hashApiKey is deterministic and not equal to raw key (0.364292ms)
+✔ constantTimeEqual returns true only for exact match (0.0945ms)
+✔ verifyApiKey validates raw key against stored hash (0.092875ms)
+✔ buildConfig accepts default memory backend (0.55075ms)
+✔ buildConfig rejects postgres backend without DATABASE_URL (0.211208ms)
+✔ buildConfig rejects redis enabled without REDIS_URL (0.074125ms)
+✔ buildConfig supports legacy STORAGE_BACKEND and REDIS_ENABLED aliases (0.094ms)
+✔ buildConfig parses EASYQR_ALLOW_LEGACY_KEYS flag (0.076917ms)
+✔ createDataLayer uses memory mode when configured (0.493125ms)
+✔ requestContext generates and sets request id (0.687584ms)
+✔ requestContext reuses incoming x-request-id (0.08475ms)
+✔ validateCreateSession rejects missing projectId with app error (0.159125ms)
+✔ validateCreateSession normalizes valid payload (2.154042ms)
+✔ notFoundHandler returns standardized error envelope (0.137584ms)
+✔ errorHandler returns standardized client error envelope (0.138167ms)
+✔ errorHandler masks unexpected errors as internal server error (0.086875ms)
+✔ accepts a valid scan payload (3.176583ms)
+✔ rejects duplicate scan payloads for same session (0.131708ms)
+✔ rejects scan payload when sessionId mismatches socket session (0.101375ms)
+✔ rejects invalid scan payload shape (0.107291ms)
+{"timestamp":"2026-02-24T11:53:40.189Z","level":"info","event":"scan.history.read","service":"test-service","requestId":"test-request-id","sessionId":"session-a-2","count":0,"projectId":"tenant-A"}
+{"timestamp":"2026-02-24T11:53:40.192Z","level":"info","event":"session.created","service":"test-service","requestId":"test-request-id","sessionId":"1352f1f4-6b8e-45a6-9c3b-8d9e7957438c","projectId":"legacy-tenant","expiresAt":1771934320191}
+✔ rotated key remains valid until revoked and revoked key fails (2.69825ms)
+✔ rotate and revoke endpoints create audit entries (0.766041ms)
+✔ failed auth writes AUTH_FAILURE audit event (0.5ms)
+✔ cross-tenant session access is rejected with 403 (0.76925ms)
+✔ valid tenant access to own session scans succeeds (0.594917ms)
+✔ expired session scan query is rejected (0.296708ms)
+✔ admin audit endpoint requires valid admin token (0.344458ms)
+✔ legacy key fallback obeys EASYQR_ALLOW_LEGACY_KEYS flag (1.6165ms)
+✔ creates a session with expiry and default state (0.829833ms)
+✔ detects expired session by expiresAt (0.271208ms)
+✔ terminateSession sets EXPIRED when reason is expired (0.227ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 125.641792

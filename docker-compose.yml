@@ -1,0 +1,82 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: easyqr-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-easyqr}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-easyqr}
+      POSTGRES_DB: ${POSTGRES_DB:-easyqr}
+    volumes:
+      - easyqr_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-easyqr} -d ${POSTGRES_DB:-easyqr}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - easyqr-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: easyqr-redis
+    command: ["redis-server", "--appendonly", "yes", "--save", "60", "1000"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - easyqr-net
+
+  easyqr-server:
+    image: easyqr-server:${IMAGE_TAG:-latest}
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: easyqr-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      PORT: ${PORT:-3000}
+      NODE_ENV: ${NODE_ENV:-production}
+      JWT_SECRET: ${JWT_SECRET:-change_me_to_min_16_chars}
+      SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-600}
+      EASYQR_ALLOWED_ORIGINS: ${EASYQR_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3001}
+      EASYQR_STORAGE_BACKEND: ${EASYQR_STORAGE_BACKEND:-postgres}
+      DATABASE_URL: ${DATABASE_URL:-postgres://easyqr:easyqr@postgres:5432/easyqr}
+      EASYQR_REDIS_ENABLED: ${EASYQR_REDIS_ENABLED:-true}
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      EASYQR_REDIS_CHANNEL: ${EASYQR_REDIS_CHANNEL:-easyqr.events}
+      EASYQR_INSTANCE_ID: ${EASYQR_INSTANCE_ID:-easyqr-docker-1}
+      EASYQR_ADMIN_TOKEN: ${EASYQR_ADMIN_TOKEN:-change_me_admin_token}
+      EASYQR_ALLOW_LEGACY_KEYS: ${EASYQR_ALLOW_LEGACY_KEYS:-true}
+      EASYQR_RATE_LIMIT_ENABLED: ${EASYQR_RATE_LIMIT_ENABLED:-true}
+      EASYQR_RATE_LIMIT_API_PROJECT_PER_MIN: ${EASYQR_RATE_LIMIT_API_PROJECT_PER_MIN:-60}
+      EASYQR_RATE_LIMIT_API_IP_PER_MIN: ${EASYQR_RATE_LIMIT_API_IP_PER_MIN:-120}
+      EASYQR_RATE_LIMIT_WS_PROJECT_PER_MIN: ${EASYQR_RATE_LIMIT_WS_PROJECT_PER_MIN:-30}
+      EASYQR_RATE_LIMIT_WS_IP_PER_MIN: ${EASYQR_RATE_LIMIT_WS_IP_PER_MIN:-60}
+      EASYQR_SHUTDOWN_TIMEOUT_MS: ${EASYQR_SHUTDOWN_TIMEOUT_MS:-15000}
+      EASYQR_WS_DRAIN_GRACE_MS: ${EASYQR_WS_DRAIN_GRACE_MS:-5000}
+      EASYQR_STARTUP_READY_DELAY_MS: ${EASYQR_STARTUP_READY_DELAY_MS:-0}
+    command: ["sh", "-c", "npm run migrate && npm start"]
+    stop_grace_period: 20s
+    ports:
+      - "${HOST_PORT:-3000}:3000"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health >/dev/null 2>&1 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 20s
+    networks:
+      - easyqr-net
+
+networks:
+  easyqr-net:
+    driver: bridge
+
+volumes:
+  easyqr_postgres_data:

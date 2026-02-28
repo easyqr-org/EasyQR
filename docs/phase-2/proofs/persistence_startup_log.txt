@@ -1,0 +1,3 @@
+{"timestamp":"2026-02-24T10:59:30.151Z","level":"info","event":"service.started","service":"easyqr-service","port":3000,"desktopPath":"/","mobilePath":"/mobile","storageBackend":"postgres","redisEnabled":true,"instanceId":"230e7e3d-7930-475b-b65e-8a40fffb27a9"}
+{"timestamp":"2026-02-24T10:59:45.590Z","level":"info","event":"session.created","service":"easyqr-service","requestId":"ee9e79f5-2e96-49e9-81e4-bac7c6159b7c","sessionId":"81dd4069-225f-45b4-9cb7-8540c9a18b9e","projectId":"dev_project","expiresAt":1771931385571}
+{"timestamp":"2026-02-24T10:59:45.592Z","level":"info","event":"http.request","service":"easyqr-service","requestId":"ee9e79f5-2e96-49e9-81e4-bac7c6159b7c","method":"POST","path":"/api/sessions","statusCode":201,"durationMs":29.07}

@@ -20,6 +20,23 @@ const { validateProjectAccess } = require("./middleware/validateProjectAccess");
 const { createLifecycle } = require("./runtime/lifecycle");
 const { renderMetrics } = require("./observability/metrics");
 
+const defaultAllowedOriginPatterns = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  /\.ngrok-free\.dev$/,
+  /\.ngrok\.io$/,
+];
+
+function isAllowedOrigin(origin, allowedOrigins = []) {
+  const candidates = [...defaultAllowedOriginPatterns, ...allowedOrigins];
+  return candidates.some((candidate) => {
+    if (typeof candidate === "string") {
+      return origin === candidate;
+    }
+    return candidate.test(origin);
+  });
+}
+
 function createApp(config, logger, dataLayer, lifecycle = null) {
   const app = express();
   const {
@@ -301,11 +318,11 @@ function createApp(config, logger, dataLayer, lifecycle = null) {
   app.use(
     cors({
       origin: (origin, callback) => {
-        if (!origin || !allowedOrigins.length) {
+        if (!origin) {
           return callback(null, true);
         }
 
-        if (allowedOrigins.includes(origin)) {
+        if (isAllowedOrigin(origin, allowedOrigins)) {
           return callback(null, true);
         }
 
@@ -318,6 +335,7 @@ function createApp(config, logger, dataLayer, lifecycle = null) {
           false
         );
       },
+      credentials: true,
     })
   );
 

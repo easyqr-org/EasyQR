@@ -2,34 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>EasyQR Desktop</title>
+  <title>EasyQR Demo Host</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <div class="bg"></div>
 
-  <div class="card">
-    <div class="header">
-      <h1>🖥 EasyQR Desktop</h1>
-      <p class="subtitle">Phase 2 · Task 2.7 — Disconnect Recovery</p>
-    </div>
+  <main class="layout">
+    <section class="panel hero-panel">
+      <div class="eyebrow">EasyQR Live Demo</div>
+      <h1>Pair a phone and stream barcode scans to the desktop in real time.</h1>
+      <p class="lead">
+        Create a session, scan the QR with a phone, allow camera access, then scan any barcode to
+        watch the desktop update live.
+      </p>
 
-    <div class="status">
-      <span class="dot" id="statusDot"></span>
-      <span id="statusText">Waiting for mobile…</span>
-    </div>
+      <div class="actions">
+        <button id="createSessionBtn" class="primary-btn" type="button">Create Demo Session</button>
+        <button id="resetBtn" class="secondary-btn" type="button">Reset</button>
+      </div>
 
-    <div class="scan-box">
-      <p class="label">Latest Scan</p>
-      <p id="scanValue" class="scan">—</p>
-    </div>
+      <div class="status-pill">
+        <span class="dot" id="statusDot"></span>
+        <span id="statusText">Ready to create a session</span>
+      </div>
 
-    <div class="footer">
-      <p>🔒 Real-time • Secure • Persistent</p>
-    </div>
-  </div>
+      <div id="errorBox" class="error-box" hidden></div>
+    </section>
 
-  <script src="main.js"></script>
+    <section class="panel qr-panel">
+      <div class="panel-heading">
+        <h2>Mobile Pairing</h2>
+        <p>Scan this QR code with a phone camera to open the EasyQR mobile scanner.</p>
+      </div>
+
+      <div id="qrEmptyState" class="qr-empty">Create a session to display the pairing QR code.</div>
+      <div id="qrCard" class="qr-card" hidden>
+        <img id="qrImage" class="qr-image" alt="Mobile pairing QR code" />
+        <a id="mobileUrlLink" class="mobile-link" href="#" target="_blank" rel="noreferrer">-</a>
+      </div>
+    </section>
+
+    <section class="panel details-panel">
+      <div class="panel-heading">
+        <h2>Session Details</h2>
+        <p>Use these details during the demo or open the mobile page directly.</p>
+      </div>
+
+      <dl class="details-grid">
+        <div>
+          <dt>Session ID</dt>
+          <dd id="sessionIdValue">-</dd>
+        </div>
+        <div>
+          <dt>Session State</dt>
+          <dd id="sessionStateValue">-</dd>
+        </div>
+        <div>
+          <dt>Desktop URL</dt>
+          <dd><a id="desktopUrlLink" href="#" target="_blank" rel="noreferrer">-</a></dd>
+        </div>
+        <div>
+          <dt>Backend</dt>
+          <dd id="backendUrlValue">-</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="panel scans-panel">
+      <div class="panel-heading">
+        <h2>Live Scan Feed</h2>
+        <p>Incoming barcodes appear here as soon as the mobile device scans them.</p>
+      </div>
+
+      <div id="latestScanCard" class="latest-scan">
+        <span class="latest-label">Latest Scan</span>
+        <strong id="scanValue">No scans yet</strong>
+      </div>
+
+      <ul id="scanList" class="scan-list"></ul>
+    </section>
+  </main>
+  <script src="/demo-config.js"></script>
+  <script src="/main.js"></script>
 </body>
 </html>

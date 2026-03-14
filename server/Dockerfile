@@ -3,7 +3,7 @@
 FROM node:20-alpine AS builder
 WORKDIR /app/server
 
-COPY package.json package-lock.json ./
+COPY server/package.json server/package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 
 FROM node:20-alpine AS runtime
@@ -11,11 +11,13 @@ WORKDIR /app/server
 ENV NODE_ENV=production
 
 COPY --from=builder /app/server/node_modules ./node_modules
-COPY package.json package-lock.json ./
-COPY src ./src
-COPY public ./public
-COPY migrations ./migrations
-COPY scripts ./scripts
+COPY server/package.json server/package-lock.json ./
+COPY server/src ./src
+COPY server/public ./public
+COPY server/migrations ./migrations
+COPY server/scripts ./scripts
+COPY desktop-app ../desktop-app
+COPY mobile-scanner ../mobile-scanner
 
 RUN addgroup -S easyqr && adduser -S easyqr -G easyqr
 USER easyqr

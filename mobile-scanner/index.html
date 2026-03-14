@@ -1,32 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
   <title>EasyQR Scanner</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="src/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/mobile/src/styles.css" />
 </head>
 <body>
+  <main class="app-shell">
+    <div class="ambient-glow ambient-glow-a"></div>
+    <div class="ambient-glow ambient-glow-b"></div>
 
-  <div class="scanner-container">
-    <h1>📱 EasyQR Scanner</h1>
-    <p class="hint">Tap start and scan the desktop QR</p>
+    <section class="app-card">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">EasyQR Mobile</p>
+          <h1>Scanner</h1>
+        </div>
+        <span id="statusBadge" class="status-badge">Connecting</span>
+      </header>
 
-    <button id="startBtn">Start Scanning</button>
-<!--      just for task 2.7 to send invalid json format scan data -->
-<button id="sendInvalid" style="margin-top:10px;background:#ef4444;color:white;">
-  Send Invalid Payload (Test)
-</button>
+      <p class="subtitle">
+        Pairing is complete. Allow camera access, then scan any barcode to send it straight to the desktop.
+      </p>
 
-    <div class="frame hidden" id="frame">
-      <video id="video" autoplay playsinline></video>
-      <div class="scan-line"></div>
-    </div>
+      <section class="camera-card" id="frame">
+        <div class="camera-stage">
+          <video id="video" autoplay playsinline muted></video>
+          <div class="camera-overlay">
+            <div class="scan-window"></div>
+            <div class="scan-line"></div>
+          </div>
+          <div class="camera-placeholder" id="cameraPlaceholder">
+            <div class="placeholder-icon">+</div>
+            <p>Camera preview will appear here</p>
+          </div>
+        </div>
+      </section>
 
-    <p id="statusText" class="status">Waiting to start…</p>
-    <p id="scanResult" class="result"></p>
-  </div>
+      <section class="result-card">
+        <p class="result-label">Latest Scan</p>
+        <p id="scanValue" class="scan-value">Waiting for scan</p>
+        <p id="statusText" class="status-text">Connecting to EasyQR...</p>
+      </section>
 
+      <button id="startBtn" class="primary-button" type="button" disabled>
+        Start Camera
+      </button>
+    </section>
+  </main>
+
+  <script src="/demo-config.js"></script>
   <script src="https://unpkg.com/@zxing/library@latest"></script>
-  <script src="src/scanner.js"></script>
+  <script src="/mobile/src/scanner.js" defer></script>
 </body>
 </html>

@@ -1,112 +1,170 @@
-const video = document.getElementById("video");
-const startBtn = document.getElementById("startBtn");
-const statusText = document.getElementById("statusText");
-const scanResult = document.getElementById("scanResult");
-const frame = document.getElementById("frame");
+window.addEventListener("DOMContentLoaded", () => {
+  const baseUrl = window.PUBLIC_BASE_URL || window.location.origin;
+  const params = new URLSearchParams(location.search);
+  const sessionId = params.get("sessionId");
+  const token = params.get("token");
 
-function getSessionInfo() {
-  const url = new URL(window.location.href);
-  const sessionId = url.searchParams.get("sessionId");
-  const token = url.searchParams.get("token");
-  return { sessionId, token };
-}
+  const video = document.getElementById("video");
+  const startBtn = document.getElementById("startBtn");
+  const statusText = document.getElementById("statusText");
+  const statusBadge = document.getElementById("statusBadge");
+  const scanValue = document.getElementById("scanValue");
+  const cameraPlaceholder = document.getElementById("cameraPlaceholder");
+  const resultCard = document.querySelector(".result-card");
 
-const { sessionId, token: wsToken } = getSessionInfo();
+  const reader = new ZXing.BrowserMultiFormatReader();
 
-let lastSent = null;
-let locked = false;
+  let ws = null;
+  let scannerStarted = false;
+  let lastValue = null;
+  let lastScanTime = 0;
 
-let ws = null;
-
-if (!sessionId || !wsToken) {
-  statusText.innerText = "Missing session info";
-} else {
-  const origin = window.location.origin;
-  const wsBase = origin.replace(/^http/, "ws");
-  const wsUrl = `${wsBase}/ws?token=${encodeURIComponent(
-    wsToken
-  )}&role=MOBILE&sessionId=${encodeURIComponent(sessionId)}`;
-
-  ws = new WebSocket(wsUrl);
-
-  ws.onopen = () => {
-    // Kept for backwards compatibility; server treats MOBILE_JOIN as no-op.
-    ws.send(JSON.stringify({ type: "MOBILE_JOIN" }));
-    statusText.innerText = "🟢 Connected";
-  };
-
-  ws.onmessage = (e) => {
-    const msg = JSON.parse(e.data);
-    if (msg.type === "ERROR") {
-      statusText.innerText = "⚠️ Scan rejected";
-      locked = false;
-    }
-  };
-}
-
-const reader = new ZXing.BrowserMultiFormatReader();
-
-startBtn.addEventListener("click", async () => {
-  if (!ws || ws.readyState !== WebSocket.OPEN) {
-    statusText.innerText = "WebSocket not connected";
-    return;
+  function setStatus(label, detail, tone = "") {
+    statusBadge.textContent = label;
+    statusBadge.className = `status-badge ${tone}`.trim();
+    statusText.textContent = detail;
   }
 
-  startBtn.style.display = "none";
-  frame.classList.remove("hidden");
-  statusText.innerText = "📷 Scanning…";
+  function showSuccess(value) {
+    scanValue.textContent = value;
+    resultCard.classList.add("success");
+    setStatus("Scanning", "Scan sent to desktop", "scanning");
+    window.setTimeout(() => {
+      resultCard.classList.remove("success");
+      setStatus("Connected", "Ready for the next scan", "connected");
+    }, 1200);
+  }
 
-  await reader.decodeFromConstraints(
-    { video: { facingMode: "environment" } },
-    video,
-    (res) => {
-      if (!res || locked) return;
+  function normalizeFormat(result) {
+    const rawFormat =
+      typeof result?.getBarcodeFormat === "function"
+        ? result.getBarcodeFormat()
+        : result?.format;
 
-      if (res.text === lastSent) return;
+    if (!rawFormat) return "QR_CODE";
+    if (typeof rawFormat === "string") return rawFormat;
+    if (typeof rawFormat === "object" && typeof rawFormat.toString === "function") {
+      const rendered = rawFormat.toString();
+      if (rendered && rendered !== "[object Object]") return rendered;
+    }
+    return String(rawFormat);
+  }
 
-      locked = true;
-      lastSent = res.text;
+  function handleScan(result) {
+    if (!result?.text || !ws || ws.readyState !== WebSocket.OPEN) {
+      return;
+    }
 
-      const payload = {
+    const value = result.text.trim();
+    if (!value) return;
+
+    const now = Date.now();
+    if (value === lastValue && now - lastScanTime < 1500) {
+      return;
+    }
+
+    lastValue = value;
+    lastScanTime = now;
+
+    const payload = {
+      type: "SCAN",
+      payload: {
         sessionId,
-        value: res.text,
-        format: res.getBarcodeFormat(),
+        value,
+        format: normalizeFormat(result),
         timestamp: new Date().toISOString(),
         source: "mobile",
-      };
+      },
+    };
 
-      ws.send(JSON.stringify({ type: "SCAN", payload }));
+    console.log("Sending scan:", payload);
+    ws.send(JSON.stringify(payload));
+    showSuccess(value);
+    navigator.vibrate?.(100);
+  }
 
-      scanResult.innerText = res.text;
-      statusText.innerText = "✅ Scan sent";
-      navigator.vibrate?.(100);
+  async function startScanner() {
+    if (scannerStarted) return;
+    scannerStarted = true;
+    startBtn.disabled = true;
+    startBtn.textContent = "Camera Active";
+    setStatus("Scanning", "Starting camera preview...", "scanning");
 
-      setTimeout(() => (locked = false), 1500);
+    try {
+      await reader.decodeFromConstraints(
+        { video: { facingMode: { ideal: "environment" } } },
+        video,
+        (result) => {
+          if (!video.classList.contains("active")) {
+            video.classList.add("active");
+            cameraPlaceholder.classList.add("hidden");
+          }
+
+          if (result) {
+            handleScan(result);
+          }
+        }
+      );
+    } catch (error) {
+      scannerStarted = false;
+      startBtn.disabled = false;
+      startBtn.textContent = "Retry Camera";
+      setStatus(
+        "Camera Error",
+        error instanceof Error ? error.message : "Unable to start camera",
+        "error"
+      );
     }
-  );
-});
+  }
 
-// 🔥 Task 2.7 — Invalid Payload Test
-document.getElementById("sendInvalid").addEventListener("click", () => {
-  if (!ws || ws.readyState !== WebSocket.OPEN) {
-    statusText.innerText = "WebSocket not connected";
+  if (!sessionId || !token) {
+    setStatus("Missing Session", "This scanner link is incomplete.", "error");
+    startBtn.disabled = true;
     return;
   }
 
-  const invalidPayload = {
-    value: null, // ❌ invalid
-    format: 123, // ❌ invalid
-    timestamp: "INVALID", // ❌ invalid
-    // sessionId missing ❌
-  };
+  const wsProtocol = baseUrl.startsWith("https") ? "wss" : "ws";
+  const wsHost = baseUrl.replace(/^https?:\/\//, "");
+  const wsUrl = `${wsProtocol}://${wsHost}/ws?token=${encodeURIComponent(
+    token
+  )}&role=MOBILE&sessionId=${encodeURIComponent(sessionId)}`;
 
-  ws.send(
-    JSON.stringify({
-      type: "SCAN",
-      payload: invalidPayload,
-    })
-  );
+  console.log("Connecting WebSocket:", wsUrl);
+  ws = new WebSocket(wsUrl);
 
-  statusText.innerText = "❌ Invalid payload sent (test)";
+  ws.addEventListener("open", () => {
+    console.log("WebSocket connected");
+    ws.send(JSON.stringify({ type: "MOBILE_JOIN" }));
+    startBtn.disabled = false;
+    setStatus("Connected", "Ready to scan", "connected");
+  });
+
+  ws.addEventListener("message", (event) => {
+    const message = JSON.parse(event.data);
+    if (message.type === "ERROR") {
+      console.log("Scanner error:", message);
+      setStatus("Scan Rejected", message.message || "Scan rejected", "error");
+    }
+  });
+
+  ws.addEventListener("error", () => {
+    setStatus("Connection Error", "Unable to reach the EasyQR server.", "error");
+    startBtn.disabled = true;
+  });
+
+  ws.addEventListener("close", () => {
+    if (statusBadge.textContent !== "Missing Session") {
+      setStatus("Disconnected", "Connection closed. Reload the scanner link.", "error");
+    }
+    startBtn.disabled = true;
+  });
+
+  startBtn.addEventListener("click", () => {
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      setStatus("Connecting", "Waiting for WebSocket connection...", "scanning");
+      return;
+    }
+
+    void startScanner();
+  });
 });
-

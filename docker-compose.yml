@@ -31,8 +31,8 @@ services:
   easyqr-server:
     image: easyqr-server:${IMAGE_TAG:-latest}
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: server/Dockerfile
     container_name: easyqr-server
     depends_on:
       postgres:
@@ -45,6 +45,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:-change_me_to_min_16_chars}
       SESSION_TTL_SECONDS: ${SESSION_TTL_SECONDS:-600}
       EASYQR_ALLOWED_ORIGINS: ${EASYQR_ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3001}
+      EASYQR_PROJECT_KEYS: ${EASYQR_PROJECT_KEYS:-}
       EASYQR_STORAGE_BACKEND: ${EASYQR_STORAGE_BACKEND:-postgres}
       DATABASE_URL: ${DATABASE_URL:-postgres://easyqr:easyqr@postgres:5432/easyqr}
       EASYQR_REDIS_ENABLED: ${EASYQR_REDIS_ENABLED:-true}

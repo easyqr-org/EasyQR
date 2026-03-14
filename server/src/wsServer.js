@@ -8,6 +8,23 @@ const {
   checkWsIpLimit,
 } = require("./security/rateLimiter");
 
+const defaultAllowedOriginPatterns = [
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  /\.ngrok-free\.dev$/,
+  /\.ngrok\.io$/,
+];
+
+function isAllowedWsOrigin(origin, allowedWsOrigins = []) {
+  const candidates = [...defaultAllowedOriginPatterns, ...allowedWsOrigins];
+  return candidates.some((candidate) => {
+    if (typeof candidate === "string") {
+      return origin === candidate;
+    }
+    return candidate.test(origin);
+  });
+}
+
 // Map<sessionId, { desktop: Set<WebSocket>, mobile: Set<WebSocket>, host: Set<WebSocket> }>
 const wsSessions = new Map();
 
@@ -224,7 +241,7 @@ function startWebSocketServer(
       }
 
       const origin = req.headers.origin;
-      if (allowedWsOrigins.length && origin && !allowedWsOrigins.includes(origin)) {
+      if (origin && !isAllowedWsOrigin(origin, allowedWsOrigins)) {
         logger.warn("ws.connection.rejected", {
           reason: "origin_not_allowed",
           origin: origin || null,

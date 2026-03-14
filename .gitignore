@@ -34,3 +34,5 @@ docker_volumes/
 **/.npm-cache/
 *.tgz
 *.tsbuildinfo
+*.ipynb
+LAB_10/

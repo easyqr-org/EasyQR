@@ -37,6 +37,20 @@ function isAllowedOrigin(origin, allowedOrigins = []) {
   });
 }
 
+function getPrimaryForwardedValue(value) {
+  return String(value || "")
+    .split(",")[0]
+    .trim();
+}
+
+function getExternalBaseUrl(req) {
+  const forwardedProto = getPrimaryForwardedValue(req.get("x-forwarded-proto"));
+  const forwardedHost = getPrimaryForwardedValue(req.get("x-forwarded-host"));
+  const protocol = forwardedProto || req.protocol;
+  const host = forwardedHost || req.get("host");
+  return `${protocol}://${host}`;
+}
+
 function createApp(config, logger, dataLayer, lifecycle = null) {
   const app = express();
   const {
@@ -392,6 +406,7 @@ function createApp(config, logger, dataLayer, lifecycle = null) {
 
   app.use(express.static(path.join(__dirname, "../../desktop-app")));
   app.use("/mobile", express.static(path.join(__dirname, "../../mobile-scanner")));
+  app.use("/public", express.static(path.join(__dirname, "../../public")));
   app.use(
     "/sdk",
     express.static(path.join(__dirname, "../public/sdk"), { index: false })
@@ -430,7 +445,7 @@ function createApp(config, logger, dataLayer, lifecycle = null) {
         expiresIn: sessionTtlSeconds,
       });
 
-      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      const baseUrl = getExternalBaseUrl(req);
       const desktopUrl = `${baseUrl}/session/${sessionId}?token=${encodeURIComponent(
         wsToken
       )}`;

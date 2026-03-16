@@ -1,5 +1,10 @@
 const { SESSION_STATES } = require("./sessionStates");
-const { getScanHash, isSessionExpired, isValidScanPayload } = require("./utils");
+const {
+  getScanHash,
+  isDuplicateScanWithinWindow,
+  isSessionExpired,
+  isValidScanPayload,
+} = require("./utils");
 const { v4: uuidv4 } = require("uuid");
 const {
   generateApiKey,
@@ -197,8 +202,18 @@ function createPostgresStore({ databaseUrl, logger }) {
           return { accepted: false, reason: "unknown_session" };
         }
 
-        const lastHash = sessionRow.rows[0].last_scan_hash || null;
-        if (lastHash && lastHash === scanHash) {
+        const lastScanRow = await client.query(
+          `
+          SELECT session_id, value, format, scan_timestamp, source
+          FROM easyqr_scans
+          WHERE session_id = $1
+          ORDER BY id DESC
+          LIMIT 1
+          `,
+          [sessionId]
+        );
+        const lastScan = mapScanRow(lastScanRow.rows[0]);
+        if (isDuplicateScanWithinWindow(payload, lastScan)) {
           await client.query("ROLLBACK");
           return { accepted: false, reason: "duplicate_scan" };
         }

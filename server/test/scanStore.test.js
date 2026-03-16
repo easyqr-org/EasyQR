@@ -32,6 +32,17 @@ test("rejects duplicate scan payloads for same session", () => {
   assert.equal(getAllScans(sessionId).length, 1);
 });
 
+test("accepts the same scan again after the duplicate window passes", () => {
+  const first = buildPayload({ timestamp: new Date("2026-03-16T10:00:00.000Z").toISOString() });
+  const second = buildPayload({
+    timestamp: new Date("2026-03-16T10:00:03.000Z").toISOString(),
+  });
+
+  assert.equal(saveScan(sessionId, first), true);
+  assert.equal(saveScan(sessionId, second), true);
+  assert.equal(getAllScans(sessionId).length, 2);
+});
+
 test("rejects scan payload when sessionId mismatches socket session", () => {
   const accepted = saveScan(sessionId, buildPayload({ sessionId: "other-session" }));
   assert.equal(accepted, false);

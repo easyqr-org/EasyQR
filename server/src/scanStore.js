@@ -6,6 +6,7 @@
 const scansBySession = new Map();
 // Map<sessionId, string> (hash of last scan)
 const lastHashBySession = new Map();
+const DUPLICATE_WINDOW_MS = 1500;
 
 function isValidPayload(p) {
   return (
@@ -21,6 +22,21 @@ function getHash(p) {
   return `${p.sessionId}:${p.value}:${p.format}`;
 }
 
+function isDuplicateWithinWindow(current, previous) {
+  if (!current || !previous) return false;
+  if (`${current.value}:${current.format}` !== `${previous.value}:${previous.format}`) {
+    return false;
+  }
+
+  const currentTs = Date.parse(current.timestamp);
+  const previousTs = Date.parse(previous.timestamp);
+  if (!Number.isFinite(currentTs) || !Number.isFinite(previousTs)) {
+    return false;
+  }
+
+  return Math.abs(currentTs - previousTs) <= DUPLICATE_WINDOW_MS;
+}
+
 function saveScan(sessionId, payload) {
   if (!isValidPayload(payload)) {
     return false;
@@ -30,16 +46,14 @@ function saveScan(sessionId, payload) {
     return false;
   }
 
-  const hash = getHash(payload);
-  const lastHash = lastHashBySession.get(sessionId) || null;
-
-  if (hash === lastHash) {
+  const arr = scansBySession.get(sessionId) || [];
+  const lastScan = arr[arr.length - 1] || null;
+  if (isDuplicateWithinWindow(payload, lastScan)) {
     return false;
   }
 
+  const hash = getHash(payload);
   lastHashBySession.set(sessionId, hash);
-
-  const arr = scansBySession.get(sessionId) || [];
   arr.push(payload);
   if (arr.length > 50) arr.shift();
   scansBySession.set(sessionId, arr);

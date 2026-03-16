@@ -1,5 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
-  const baseUrl = window.PUBLIC_BASE_URL || window.location.origin;
+  const baseUrl = (window.PUBLIC_BASE_URL || "").trim() || window.location.origin;
   const params = new URLSearchParams(location.search);
   const sessionId = params.get("sessionId");
   const token = params.get("token");

@@ -1,6 +1,6 @@
 const DEMO_PROJECT_ID = "dev_project";
 const DEMO_API_KEY = "dev_key";
-const BASE_URL = window.PUBLIC_BASE_URL || window.location.origin;
+const BASE_URL = (window.PUBLIC_BASE_URL || "").trim() || window.location.origin;
 
 const ui = {
   createSessionBtn: document.getElementById("createSessionBtn"),

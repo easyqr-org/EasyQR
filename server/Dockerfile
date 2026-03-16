@@ -18,6 +18,7 @@ COPY server/migrations ./migrations
 COPY server/scripts ./scripts
 COPY desktop-app ../desktop-app
 COPY mobile-scanner ../mobile-scanner
+COPY public ../public
 
 RUN addgroup -S easyqr && adduser -S easyqr -G easyqr
 USER easyqr

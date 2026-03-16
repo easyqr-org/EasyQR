@@ -1,5 +1,10 @@
 const { SESSION_STATES } = require("./sessionStates");
-const { getScanHash, isSessionExpired, isValidScanPayload } = require("./utils");
+const {
+  getScanHash,
+  isDuplicateScanWithinWindow,
+  isSessionExpired,
+  isValidScanPayload,
+} = require("./utils");
 const {
   generateApiKey,
   hashApiKey,
@@ -82,19 +87,19 @@ function createMemoryStore() {
         return { accepted: false, reason: "session_mismatch" };
       }
 
-      const hash = getScanHash(payload);
-      const lastHash = lastHashBySession.get(sessionId) || null;
-      if (hash === lastHash) {
+      const arr = scansBySession.get(sessionId) || [];
+      const lastScan = arr[arr.length - 1] || null;
+      if (isDuplicateScanWithinWindow(payload, lastScan)) {
         return { accepted: false, reason: "duplicate_scan" };
       }
 
+      const hash = getScanHash(payload);
       lastHashBySession.set(sessionId, hash);
       const session = sessions.get(sessionId);
       if (session) {
         sessions.set(sessionId, { ...session, lastScanHash: hash });
       }
 
-      const arr = scansBySession.get(sessionId) || [];
       arr.push(payload);
       if (arr.length > 50) arr.shift();
       scansBySession.set(sessionId, arr);
